@@ -9,5 +9,6 @@ namespace ebsis_3.Models
     interface ISinusoidRepository
     {
         void CreateSinusoidSeries(SinusoidModel _sinModeel);
+        void WindowCalculate(double[] points, SinusoidModel _sinModel);
     }
 }
