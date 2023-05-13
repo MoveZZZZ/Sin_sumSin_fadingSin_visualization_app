@@ -47,11 +47,27 @@ namespace ebsis_3.ViewModel
 
 
         public ICommand ShowBasicSinusoidCommand { get; }
+        public ICommand ShowDualSinusoidCommand { get; }
+        public ICommand ShowCustomSignalCommand { get; }
 
         public MainWindowViewModel()
         {
             ShowBasicSinusoidCommand = new ViewModelCommand(ExecuteShowBasicSinusoidCommand);
+            ShowDualSinusoidCommand = new ViewModelCommand(ExecuteShowDualSinusoidCommand);
+            ShowCustomSignalCommand = new ViewModelCommand(ExecuteShowCustomSignalCommand);
             ExecuteShowBasicSinusoidCommand(null);
+        }
+
+        private void ExecuteShowCustomSignalCommand(object obj)
+        {
+            CurrentChildView = new CustomSignalViewModel();
+            LabelMainWindow = "Custom Signal";
+        }
+
+        private void ExecuteShowDualSinusoidCommand(object obj)
+        {
+            CurrentChildView = new DualSinusoidViewModel();
+            LabelMainWindow = "Dual Sinusoid";
         }
 
         private void ExecuteShowBasicSinusoidCommand(object obj)

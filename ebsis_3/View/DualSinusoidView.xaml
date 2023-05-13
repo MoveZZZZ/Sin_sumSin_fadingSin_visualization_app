@@ -1,0 +1,297 @@
+﻿<UserControl x:Class="ebsis_3.View.DualSinusoidView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ebsis_3.View"
+             xmlns:viewModel="clr-namespace:ebsis_3.ViewModel"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1400">
+    <UserControl.DataContext>
+        <viewModel:DualSinusoidViewModel/>
+    </UserControl.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1000"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="0" Grid.Column="0" Margin="5,2,5,2">
+                <TextBlock
+                        Text="Frequency 1 sinusoid [Hz]"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+                <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                         Text="{Binding SelectedItemFreqencyFirstSinusoid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock
+                        Text="Amplitude 1 sinusoid [m]"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+                <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                         Text="{Binding SelectedItemAmplitudeFirstSinusoid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock
+                        Text="Phase 1 sinusoid"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+                <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                         Text="{Binding SelectedItemPhaseFirstSinusoid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1" Margin="5,2,5,2">
+                <TextBlock
+                        Text="Frequency 2 sinusoid [Hz]"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+                <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                         Text="{Binding SelectedItemFreqencySecondSinusoid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock
+                        Text="Amplitude 2 sinusoid [m]"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+                <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                         Text="{Binding SelectedItemAmplitudeSecondSinusoid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock
+                        Text="Phase 2 sinusoid"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+                <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                         Text="{Binding SelectedItemPhaseSecondSinusoid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,5,0">
+                <TextBlock
+                        Text="Sample Frequency"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+                <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                         Width="180"
+                         Text="{Binding SelectedItemSampleFreq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock
+                        Text="Time Range [s]"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox FontFamily="Montserrat"
+                                 Grid.Column="0"
+                                 TextAlignment="Center"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Right"
+                        FontSize="15"
+                          Width="30"
+                                 Height="20"
+                         Margin="160,0,0,0"
+                         Text="{Binding SelectedItemTimeStart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Grid.Column="1"
+                                   Text="to"
+                                   TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="5,0,5,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                                   />
+                    <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                                   Grid.Column="2"
+                                 TextAlignment="Center"
+                                 HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
+                          Width="30"
+                                 Height="20"
+                                 Margin="0,0,160,0"
+                         Text="{Binding SelectedItemTimeEnd, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+                <TextBlock
+                        Text="Window Type"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+                <ComboBox
+                        Margin="20,5,20,5"
+                        Height="20"
+                    Width="180"
+                        Foreground="Black"
+                        FontSize="12"
+                        FontFamily="Montserrat"
+                        SelectedItem="{Binding SelectedItemWindowType, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedIndex="0"
+                        >
+                    <ComboBoxItem>None</ComboBoxItem>
+                    <ComboBoxItem>Hann</ComboBoxItem>
+                    <ComboBoxItem>Hann Periodic</ComboBoxItem>
+                    <ComboBoxItem>Lanczos</ComboBoxItem>
+                    <ComboBoxItem>Hamming</ComboBoxItem>
+                    <ComboBoxItem>Hamming Periodic</ComboBoxItem>
+                </ComboBox>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" CornerRadius="10" Margin="5">
+                        <CheckBox IsChecked="{Binding CheckBoxBasicChecked, Mode=TwoWay}"
+                                     Grid.Column="0"
+                                     Tag="#FFFFFF"
+                                  Margin="5"
+                                     >
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Basic"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Margin="0,2,5,0"
+                        FontFamily="Montserrat"
+                        FontSize="12"/>
+                            </StackPanel>
+                        </CheckBox>
+                    </Border>
+                    <Border Grid.Column="1" BorderBrush="Black" BorderThickness="2" CornerRadius="10" Margin="5">
+                        <CheckBox
+                            IsChecked="{Binding CheckBoxTimeChecked, Mode=TwoWay}"
+                                     Grid.Column="1"
+                                     Tag="#FFFFFF"
+                            Margin="5"
+                                     >
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Offset time"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Margin="0,2,5,0"
+                        FontFamily="Montserrat"
+                        FontSize="12"/>
+                            </StackPanel>
+                        </CheckBox>
+                    </Border>
+                    <Border Grid.Column="2" BorderBrush="Black" BorderThickness="2" CornerRadius="10" Margin="5">
+                        <CheckBox 
+                            IsChecked="{Binding CheckBoxTimeFreqChecked, Mode=TwoWay}"
+                                     Grid.Column="2"
+                            Margin="5"
+                                     Tag="#FFFFFF"
+                                     >
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Offset time/freq."
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Margin="0,2,5,0"
+                        FontFamily="Montserrat"
+                        FontSize="12"/>
+                            </StackPanel>
+                        </CheckBox>
+                    </Border>
+                </Grid>
+                <Button Height="Auto" Margin="1"
+                    Width="150"
+                            Content="Apply"
+                            FontFamily="Montserrat"
+                            FontSize="12"
+                            Cursor="Hand"
+                            Foreground="#FFFAFA"
+                    HorizontalAlignment="Center"
+                            Command="{Binding ChangeCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Black"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="Red"/>
+
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Width="140" Height="20"
+                                        CornerRadius="9"
+                                        Background="{TemplateBinding Background}">
+                                <ContentPresenter VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <TextBlock TextWrapping="Wrap"
+                       Text="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}"
+                       Foreground="Red"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"/>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="0">
+            <oxy:PlotView Model="{Binding PlotModelDualSin}" Background="Transparent" Width="950" Height="340" Margin="25"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1">
+
+            <oxy:PlotView Model="{Binding PlotModelSpectrum}" Background="Transparent" Width="950" Height="340" Margin="25"/>
+        </StackPanel>
+
+
+    </Grid>
+</UserControl>

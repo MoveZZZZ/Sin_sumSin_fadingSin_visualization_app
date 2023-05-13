@@ -15,6 +15,7 @@ namespace ebsis_3.Repositories
     {
         public void CreateSinusoidSeries(SinusoidModel _sinModedl)
         {
+            _sinModedl.ErrorMSG = "";
             _sinModedl.xCoord = new List<double>();
             _sinModedl.yCoord = new List<double>();
 
@@ -37,8 +38,12 @@ namespace ebsis_3.Repositories
             _sinModel.xCoordWidmo = new List<double>();
             _sinModel.yCoordWidmo = new List<double>();
             int WindowWidth = (int)Math.Round((1 / _sinModel.Frequency) / (1 / _sinModel.SampleRate) * 5 + 0.5f);
-
-            if(_sinModel.WindowType== "Hann Periodic")
+            if (WindowWidth > points.Length)
+            {
+                WindowWidth = points.Length;
+                _sinModel.ErrorMSG = "*too much window width, bad spectrum, change frequency or time range!";
+            }
+            if (_sinModel.WindowType== "Hann Periodic")
             {
                 var HannWindowPer = Window.HannPeriodic(WindowWidth);
                 var window = new Complex[WindowWidth];

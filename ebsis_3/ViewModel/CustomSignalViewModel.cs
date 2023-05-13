@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace ebsis_3.ViewModel
 {
-    public class BasicSinusoidViewModel : ViewModelBase
+    public class CustomSignalViewModel: ViewModelBase
     {
         private const string _basicFreq = "100";
         private const string _basicAmplitude = "1";
@@ -22,10 +22,11 @@ namespace ebsis_3.ViewModel
         private const string _basicSampleFreq = "400";
         private const string _basicTimeStart = "0";
         private const string _basicTimeEnd = "1";
+        private const string _tFirst = "1";
+        private const string _tSecond = "2";
 
 
 
-        private string _freqData = "Hz";
 
         private string _selectedItemFreqency = _basicFreq;
         private string _selectedIteAmplitude = _basicAmplitude;
@@ -34,37 +35,38 @@ namespace ebsis_3.ViewModel
 
         private string _selectedItemTimeStart = _basicTimeStart;
         private string _selectedItemTimeEnd = _basicTimeEnd;
+        private string _selectedItemTFirst = _tFirst;
+        private string _selectedItemTSecond = _tSecond;
 
         private string _selectedItemWindowTypeString = "None";
         private ComboBoxItem _selectedItemWindowType;
         private string _errMsg = "";
 
-        private PlotModel _plotModel;
-        private PlotModel _plotModelWidmo;
-
-        public PlotModel PlotModel
+        private PlotModel _plotModelCustomSignal;
+        private PlotModel _plotModelSpectrum;
+        public PlotModel PlotModelCustomSignal
         {
             get
             {
-                return _plotModel;
+                return _plotModelCustomSignal;
             }
             set
             {
-                _plotModel = value;
-                OnPropertyChanged(nameof(PlotModel));
+                _plotModelCustomSignal = value;
+                OnPropertyChanged(nameof(PlotModelCustomSignal));
 
             }
         }
-        public PlotModel PlotModelWidmo
+        public PlotModel PlotModelSpectrum
         {
             get
             {
-                return _plotModelWidmo;
+                return _plotModelSpectrum;
             }
             set
             {
-                _plotModelWidmo = value;
-                OnPropertyChanged(nameof(PlotModelWidmo));
+                _plotModelSpectrum = value;
+                OnPropertyChanged(nameof(PlotModelSpectrum));
 
             }
         }
@@ -79,22 +81,6 @@ namespace ebsis_3.ViewModel
                     OnPropertyChanged(nameof(SelectedItemWindowType));
                     _selectedItemWindowTypeString = Convert.ToString(_selectedItemWindowType.Content);
                 }
-            }
-        }
-        public string FreqLabel
-        {
-            get
-            {
-                return "Frequency" + " [" + _freqData + "]";
-            }
-            set
-            {
-                if (_freqData != value)
-                {
-                    _freqData = value;
-                    OnPropertyChanged(nameof(FreqLabel));
-                }
-
             }
         }
         public string SelectedItemFreqency
@@ -188,6 +174,36 @@ namespace ebsis_3.ViewModel
                 }
             }
         }
+        public string SelectedItemTFirst
+        {
+            get
+            {
+                return _selectedItemTFirst;
+            }
+            set
+            {
+                if(_selectedItemTFirst!=value)
+                {
+                    _selectedItemTFirst = value;
+                    OnPropertyChanged(nameof(SelectedItemTFirst));
+                }
+            }
+        }
+        public string SelectedItemTSecond
+        {
+            get
+            {
+                return _selectedItemTSecond;
+            }
+            set
+            {
+                if (_selectedItemTSecond != value)
+                {
+                    _selectedItemTSecond = value;
+                    OnPropertyChanged(nameof(SelectedItemTSecond));
+                }
+            }
+        }
         public string ErrorMessage
         {
             get
@@ -196,7 +212,7 @@ namespace ebsis_3.ViewModel
             }
             set
             {
-                if(_errMsg!=value)
+                if (_errMsg != value)
                 {
                     _errMsg = value;
                     OnPropertyChanged(nameof(ErrorMessage));
@@ -204,17 +220,18 @@ namespace ebsis_3.ViewModel
             }
         }
 
-        private ISinusoidRepository SinusRepository;
-        private SinusoidModel _SinusoidModel;
+
+        private ICustomSignalRepository CustomRepository;
+        private CustomSignalModel _CustomModel;
         public ICommand ChangeCommand { get; }
 
 
-        public BasicSinusoidViewModel()
+        public CustomSignalViewModel()
         {
-            SinusRepository = new SinusoidReposirory();
-            _SinusoidModel = new SinusoidModel();
+            CustomRepository = new CustomSignalRepository();
+            _CustomModel = new CustomSignalModel();
             ChangeCommand = new ViewModelCommand(ExecuteChangeCommand, CanExecuteChangeCommand);
-            calculate();
+            calculateCustomSignalSeries();
         }
 
         private bool CanExecuteChangeCommand(object obj)
@@ -224,13 +241,12 @@ namespace ebsis_3.ViewModel
 
         private void ExecuteChangeCommand(object obj)
         {
-            calculate();
+            calculateCustomSignalSeries();
         }
-
-        private void calculate()
+        private void calculateCustomSignalSeries()
         {
-            PlotModel = new PlotModel();
-            PlotModelWidmo = new PlotModel();
+            PlotModelCustomSignal = new PlotModel();
+            PlotModelSpectrum = new PlotModel();
 
             validateData();
             updateValue();
@@ -238,33 +254,36 @@ namespace ebsis_3.ViewModel
             setParSinusoid();
             setParSinusoidWidmo();
 
-            SinusRepository.CreateSinusoidSeries(_SinusoidModel);
-            ErrorMessage = _SinusoidModel.ErrorMSG;
-            addSeries();
+            
+            CustomRepository.CreateSinusoidSeries(_CustomModel);
+            ErrorMessage = _CustomModel.ErrorMSG;
+            addSeriesCustomSignal();
             addSeriesSpectrum();
 
         }
         private void updateValue()
         {
-            _SinusoidModel.Amplitude = Convert.ToDouble(_selectedIteAmplitude);
-            _SinusoidModel.Frequency = Convert.ToDouble(_selectedItemFreqency);
-            _SinusoidModel.SampleRate = Convert.ToDouble(_selectedItemSampleFreq);
-            _SinusoidModel.Phasse = Convert.ToDouble(_selectedItemPhase);
-            _SinusoidModel.TimeStart = Convert.ToDouble(_selectedItemTimeStart);
-            _SinusoidModel.TimeEnd = Convert.ToDouble(_selectedItemTimeEnd);
-            _SinusoidModel.WindowType = _selectedItemWindowTypeString;
+            _CustomModel.Amplitude = Convert.ToDouble(_selectedIteAmplitude);
+            _CustomModel.Frequency = Convert.ToDouble(_selectedItemFreqency);
+            _CustomModel.SampleRate = Convert.ToDouble(_selectedItemSampleFreq);
+            _CustomModel.Phasse = Convert.ToDouble(_selectedItemPhase);
+            _CustomModel.TimeStart = Convert.ToDouble(_selectedItemTimeStart);
+            _CustomModel.TimeEnd = Convert.ToDouble(_selectedItemTimeEnd);
+            _CustomModel.TimeFirst = Convert.ToDouble(_selectedItemTFirst);
+            _CustomModel.TimeSecond = Convert.ToDouble(_selectedItemTSecond);
+            _CustomModel.WindowType = _selectedItemWindowTypeString;
         }
         private void setParSinusoid()
         {
-            PlotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = "Time [s]" });
-            PlotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Title = "Amplitude [m]" });
-            PlotModel.Title = "Wykres sinusoidy w dziedzinie czasu";
+            PlotModelCustomSignal.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = "Time [s]" });
+            PlotModelCustomSignal.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Title = "Amplitude [m]" });
+            PlotModelCustomSignal.Title = "Wykres sinusoidy w dziedzinie czasu";
         }
         private void setParSinusoidWidmo()
         {
-            PlotModelWidmo.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = "Frequency [Hz]"});
-            PlotModelWidmo.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Title = "Magnitude" });
-            PlotModelWidmo.Title = "Wykres sinusoidy w dziedzinie częstotliwości";
+            PlotModelSpectrum.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = "Magnitude" });
+            PlotModelSpectrum.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Title = "Frequency [Hz]" });
+            PlotModelSpectrum.Title = "Wykres sinusoidy w dziedzinie częstotliwości";
         }
         private void validateData()
         {
@@ -285,7 +304,9 @@ namespace ebsis_3.ViewModel
         private void figureValidate()
         {
             SelectedItemTimeStart = SelectedItemTimeStart.Replace(".", ",");
-            SelectedItemTimeEnd = SelectedItemTimeEnd.Replace(".", ",");
+            SelectedItemTimeEnd = SelectedItemTimeEnd.Replace(".", ",");            
+            SelectedItemTFirst = SelectedItemTFirst.Replace(".", ",");
+            SelectedItemTSecond = SelectedItemTSecond.Replace(".", ",");
             SelectedItemAmplitude = SelectedItemAmplitude.Replace(".", ",");
             foreach (char c in SelectedItemFreqency)
             {
@@ -329,33 +350,47 @@ namespace ebsis_3.ViewModel
                     SelectedItemTimeEnd = _basicTimeEnd;
                 }
             }
+            foreach (char c in SelectedItemTFirst)
+            {
+                if (!char.IsDigit(c) && c != '.' && c != ',')
+                {
+                    SelectedItemTFirst = _tFirst;
+                }
+            }
+            foreach (char c in SelectedItemTSecond)
+            {
+                if (!char.IsDigit(c) && c != '.' && c != ',')
+                {
+                    SelectedItemTSecond = _tSecond;
+                }
+            }
         }
         private void validateSampleFreq()
         {
-            if ((Convert.ToDouble(_selectedItemSampleFreq) * Convert.ToDouble(_selectedItemTimeEnd)) / 2  < Convert.ToDouble(_selectedItemFreqency))
+            if ((Convert.ToDouble(_selectedItemSampleFreq) * Convert.ToDouble(_selectedItemTimeEnd)) / 2 < Convert.ToDouble(_selectedItemFreqency))
             {
-                double freqNew = Math.Floor((Convert.ToDouble(_selectedItemFreqency) * 2)/Convert.ToDouble(_selectedItemTimeEnd));
+                double freqNew = Math.Floor((Convert.ToDouble(_selectedItemFreqency) * 2) / Convert.ToDouble(_selectedItemTimeEnd));
                 SelectedItemSampleFreq = Convert.ToString(freqNew);
             }
         }
-        private void addSeries()
+        private void addSeriesCustomSignal()
         {
             var ser = new LineSeries()
             {
                 Color = OxyColor.FromRgb(66, 0, 117)
             };
 
-            for (int i = 0; i < _SinusoidModel.xCoord.Count; i++)
+            for (int i = 0; i < _CustomModel.xCoord.Count; i++)
             {
-                ser.Points.Add(new DataPoint(_SinusoidModel.xCoord[i], _SinusoidModel.yCoord[i]));
+                ser.Points.Add(new DataPoint(_CustomModel.xCoord[i], _CustomModel.yCoord[i]));
 
             }
-            if (PlotModel.Series.Count != 0)
+            if (PlotModelCustomSignal.Series.Count != 0)
             {
-                PlotModel.Series.Clear();
+                PlotModelCustomSignal.Series.Clear();
             }
-            PlotModel.Series.Add(ser);
-            PlotModel.InvalidatePlot(true);
+            PlotModelCustomSignal.Series.Add(ser);
+            PlotModelCustomSignal.InvalidatePlot(true);
         }
         private void addSeriesSpectrum()
         {
@@ -366,26 +401,25 @@ namespace ebsis_3.ViewModel
                 MarkerStroke = OxyColor.FromRgb(0, 0, 0),
                 Color = OxyColor.FromRgb(66, 0, 117)
             };
-            for (int i = 0; i < _SinusoidModel.xCoordWidmo.Count; i++)
+            for (int i = 0; i < _CustomModel.xCoordSpectrum.Count; i++)
             {
-                serWidmo.Points.Add(new DataPoint(_SinusoidModel.xCoordWidmo[i], _SinusoidModel.yCoordWidmo[i]));
+                serWidmo.Points.Add(new DataPoint(_CustomModel.xCoordSpectrum[i], _CustomModel.yCoordSpectrum[i]));
             }
-            if (PlotModelWidmo.Series.Count != 0)
+            if (PlotModelSpectrum.Series.Count != 0)
             {
-                PlotModelWidmo.Series.Clear();
+                PlotModelSpectrum.Series.Clear();
             }
-            PlotModelWidmo.Series.Add(serWidmo);
-            PlotModelWidmo.InvalidatePlot(true);
+            PlotModelSpectrum.Series.Add(serWidmo);
+            PlotModelSpectrum.InvalidatePlot(true);
         }
-
         private bool validateNull()
         {
-            if (SelectedItemAmplitude == "" || SelectedItemFreqency== "" || SelectedItemPhase== ""
-                || SelectedItemSampleFreq== "" || SelectedItemTimeEnd== "" || SelectedItemTimeStart== "")
+            if (SelectedItemAmplitude == "" || SelectedItemFreqency == "" || SelectedItemPhase == ""
+                || SelectedItemSampleFreq == "" || SelectedItemTimeEnd == "" || SelectedItemTimeStart == ""
+                || SelectedItemTFirst==""|| SelectedItemTSecond=="")
                 return false;
             return true;
 
         }
     }
-
 }

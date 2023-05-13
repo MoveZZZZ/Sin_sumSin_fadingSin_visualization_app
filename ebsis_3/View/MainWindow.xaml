@@ -8,7 +8,7 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:viewModel="clr-namespace:ebsis_3.ViewModel"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Height="850" Width="1400"
+        Height="880" Width="1450"
         Background="Transparent"
         WindowStyle="None"
          AllowsTransparency="True"
@@ -22,6 +22,14 @@
     <Window.Resources>
         <DataTemplate DataType="{x:Type viewModel:BasicSinusoidViewModel}">
             <local:BasicSinusoidView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:DualSinusoidViewModel}">
+            <local:DualSinusoidView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:CustomSignalViewModel}">
+            <local:CustomSignalView/>
         </DataTemplate>
     </Window.Resources>
 
@@ -160,13 +168,13 @@
                             </Grid.ColumnDefinitions>
                             <Button
                         BorderThickness="0"
-                            Content="Sinus"
+                            Content="Sinusoid"
                             Foreground="White"
                             FontSize="12"
                             FontFamily="Montsterrat"
                             Cursor="Hand"
                             Grid.Column="0"
-                        Margin="5"
+                        Margin="5,4,5,3"
                         Command="{Binding ShowBasicSinusoidCommand}"
                         >
                             <Button.Style>
@@ -193,14 +201,14 @@
                         </Button>
                              <Button
                         BorderThickness="0"
-                            Content="Sinus"
+                            Content="Dual Sinusoid"
                             Foreground="White"
                             FontSize="12"
                             FontFamily="Montsterrat"
                             Cursor="Hand"
-                            Grid.Column="0"
-                        Margin="5,0,5,3"
-                        Command="{Binding ShowBasicSinusoidCommand}"
+                            Grid.Column="1"
+                        Margin="5,4,5,3"
+                        Command="{Binding ShowDualSinusoidCommand}"
                         >
                             <Button.Style>
                                 <Style TargetType="Button">
@@ -224,6 +232,39 @@
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
+                            <Button
+                        BorderThickness="0"
+                            Content="Custom Signal"
+                            Foreground="White"
+                            FontSize="12"
+                            FontFamily="Montsterrat"
+                            Cursor="Hand"
+                            Grid.Column="2"
+                        Margin="5,4,5,3"
+                        Command="{Binding ShowCustomSignalCommand}"
+                        >
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="	#181818"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="Red"/>
+
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Width="140" Height="20"
+                                        CornerRadius="9"
+                                        Background="{TemplateBinding Background}">
+                                            <ContentPresenter VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
                         </Grid>
                     </StackPanel>
                     </Border>

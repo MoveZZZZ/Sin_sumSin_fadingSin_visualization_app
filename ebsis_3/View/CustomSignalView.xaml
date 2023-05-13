@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ebsis_3.View.BasicSinusoidView"
+﻿<UserControl x:Class="ebsis_3.View.CustomSignalView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,9 +8,14 @@
              xmlns:oxy="http://oxyplot.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="1400">
+    
     <UserControl.DataContext>
-        <viewModel:BasicSinusoidViewModel/>
+        <viewModel:CustomSignalViewModel/>
     </UserControl.DataContext>
+    
+    
+    
+  
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -22,7 +27,7 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
             <TextBlock
-                        Text="{Binding FreqLabel, UpdateSourceTrigger=PropertyChanged}"
+                        Text="Frequency [Hz]"
                         TextWrapping="Wrap"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
@@ -67,6 +72,63 @@
             <TextBox FontFamily="Montserrat"
                         FontSize="15"
                          Text="{Binding SelectedItemSampleFreq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock
+                        Text="Time Parameters"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Column="1"
+                     Text="t1:"
+                        TextWrapping="Wrap"
+                    HorizontalAlignment="Right"   
+                    Margin="67,0,15,0"
+                    VerticalAlignment="Center"
+
+                        FontFamily="Montserrat"
+                        FontSize="15"/>
+                <TextBox FontFamily="Montserrat"
+                                 Grid.Column="1"
+                                 TextAlignment="Center"
+                        FontSize="15"
+                          Width="30"
+                                 Height="20"
+                         Margin="0,0,-17,0"
+                                 HorizontalAlignment="Right"
+                         VerticalAlignment="Center"
+                         Text="{Binding SelectedItemTFirst, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Column="2"
+                                   Text="t2:"
+                                   TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="20,1,4,-1"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                                   />
+                <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                                   Grid.Column="3"
+                                 TextAlignment="Center"
+                                 HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                          Width="30"
+                                 Height="20"
+                                 Margin="0,0,0,0"
+                         Text="{Binding SelectedItemTSecond, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+
             <TextBlock
                         Text="Time Range [s]"
                         TextWrapping="Wrap"
@@ -176,13 +238,14 @@
         </StackPanel>
         <StackPanel Grid.Row="0">
 
-            <oxy:PlotView Model="{Binding PlotModel}" Background="Transparent" Width="1100" Height="340" Margin="25"/>
+            <oxy:PlotView Model="{Binding PlotModelCustomSignal}" Background="Transparent" Width="1100" Height="340" Margin="25"/>
 
         </StackPanel>
         <StackPanel Grid.Row="1">
 
-            <oxy:PlotView Model="{Binding PlotModelWidmo}" Background="Transparent" Width="1100" Height="340" Margin="25"/>
+            <oxy:PlotView Model="{Binding PlotModelSpectrum}" Background="Transparent" Width="1100" Height="340" Margin="25"/>
 
         </StackPanel>
     </Grid>
+
 </UserControl>

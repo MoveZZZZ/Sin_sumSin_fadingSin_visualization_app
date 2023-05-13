@@ -117,14 +117,30 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\CustomSignalModel.cs" />
+    <Compile Include="Models\DualSinusoidModel.cs" />
+    <Compile Include="Models\ICustomSignalRepository.cs" />
+    <Compile Include="Models\IDualSinusoidRepository.cs" />
     <Compile Include="Models\ISinusoidRepository.cs" />
     <Compile Include="Models\SinusoidModel.cs" />
+    <Compile Include="Repositories\CustomSignalRepository.cs" />
+    <Compile Include="Repositories\DualSinusoidRepository.cs" />
     <Compile Include="Repositories\SinusoidReposirory.cs" />
     <Compile Include="ViewModel\BasicSinusoidViewModel.cs" />
+    <Compile Include="ViewModel\CustomSignalViewModel.cs" />
+    <Compile Include="ViewModel\DualSinusoidViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\ViewModelCommand.cs" />
     <Page Include="View\BasicSinusoidView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CustomSignalView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DualSinusoidView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -138,6 +154,12 @@
     </Compile>
     <Compile Include="View\BasicSinusoidView.xaml.cs">
       <DependentUpon>BasicSinusoidView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\CustomSignalView.xaml.cs">
+      <DependentUpon>CustomSignalView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DualSinusoidView.xaml.cs">
+      <DependentUpon>DualSinusoidView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
