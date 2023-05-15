@@ -15,18 +15,36 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1150"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
-            <TextBlock
+        <Border BorderBrush="Black"
+                BorderThickness="0.5"
+                CornerRadius="10"
+               Margin="10,5,10,5"
+                Grid.Row="0" Grid.RowSpan="3" Grid.Column="1">
+            <StackPanel  HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                         Margin="5">
+                <TextBlock
+                        Text="Data"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="35"
+                    Foreground="Red"
+                        />
+                <TextBlock
                         Text="{Binding FreqLabel, UpdateSourceTrigger=PropertyChanged}"
                         TextWrapping="Wrap"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Margin="0,60,0,0"
+                        Margin="0,10,0,0"
                         FontFamily="Montserrat"
                         FontSize="15"
                         />
@@ -68,7 +86,18 @@
                         FontSize="15"
                          Text="{Binding SelectedItemSampleFreq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock
-                        Text="Time Range [s]"
+                        Text="Signal time"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+            <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                         Text="{Binding SelectedItemSignalTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock
+                        Text="Time Observation Range [s]"
                         TextWrapping="Wrap"
                         HorizontalAlignment="Center"
                         Margin="0,10,0,0"
@@ -87,7 +116,7 @@
                         FontSize="15"
                           Width="30"
                                  Height="20"
-                         Margin="85,0,0,0"
+                         Margin="70,0,0,0"
                                  HorizontalAlignment="Right"
                          VerticalAlignment="Center"
                          Text="{Binding SelectedItemTimeStart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -173,16 +202,34 @@
                         Margin="0,10,0,0"
                         FontFamily="Montserrat"
                         FontSize="15"/>
-        </StackPanel>
-        <StackPanel Grid.Row="0">
-
-            <oxy:PlotView Model="{Binding PlotModel}" Background="Transparent" Width="1100" Height="340" Margin="25"/>
-
-        </StackPanel>
-        <StackPanel Grid.Row="1">
-
-            <oxy:PlotView Model="{Binding PlotModelWidmo}" Background="Transparent" Width="1100" Height="340" Margin="25"/>
-
-        </StackPanel>
+            </StackPanel>
+        </Border>
+        <Border BorderBrush="Black"
+                BorderThickness="0.5"
+                CornerRadius="10"
+                Grid.Row="0"
+                Margin="5">
+            <StackPanel>
+                <oxy:PlotView Model="{Binding PlotModelBase}" Background="Transparent" Width="1100" Height="225" Margin="25"/>
+            </StackPanel>
+        </Border>
+        <Border BorderBrush="Black"
+                BorderThickness="0.5"
+                CornerRadius="10"
+                Grid.Row="1"
+                Margin="5">
+            <StackPanel>
+                <oxy:PlotView Model="{Binding PlotModelSpectrum}" Background="Transparent" Width="1100" Height="225" Margin="25"/>
+            </StackPanel>
+        </Border>
+        <Border BorderBrush="Black"
+                BorderThickness="0.5"
+                CornerRadius="10"
+                Grid.Row="2"
+                Margin="5">
+            <StackPanel>
+                <oxy:PlotView Model="{Binding PlotModelSpectrumPhase}" Background="Transparent" Width="1100" Height="225" Margin="25"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

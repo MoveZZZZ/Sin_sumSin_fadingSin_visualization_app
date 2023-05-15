@@ -19,7 +19,7 @@ namespace ebsis_3.Repositories
             _sinModedl.xCoord = new List<double>();
             _sinModedl.yCoord = new List<double>();
 
-            var points = Generate.Sinusoidal(Convert.ToInt32(_sinModedl.TimeEnd*_sinModedl.SampleRate), _sinModedl.SampleRate, _sinModedl.Frequency, _sinModedl.Amplitude, 0, _sinModedl.Phasse);
+            var points = Generate.Sinusoidal(Convert.ToInt32(_sinModedl.Time*_sinModedl.SampleRate), _sinModedl.SampleRate, _sinModedl.Frequency, _sinModedl.Amplitude, 0, _sinModedl.Phasse);
             
             for (int i = 0; i < points.Length; i++)
             {
@@ -37,6 +37,7 @@ namespace ebsis_3.Repositories
         {
             _sinModel.xCoordWidmo = new List<double>();
             _sinModel.yCoordWidmo = new List<double>();
+            _sinModel.yCoordWidmoPhase = new List<double>();
             int WindowWidth = (int)Math.Round((1 / _sinModel.Frequency) / (1 / _sinModel.SampleRate) * 5 + 0.5f);
             if (WindowWidth > points.Length)
             {
@@ -57,6 +58,7 @@ namespace ebsis_3.Repositories
                 {
                     _sinModel.xCoordWidmo.Add(scale[i]);
                     _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                    _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
                 }
             }
             else if(_sinModel.WindowType=="Hann")
@@ -73,6 +75,7 @@ namespace ebsis_3.Repositories
                 {
                     _sinModel.xCoordWidmo.Add(scale[i]);
                     _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                    _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
                 }
             }
             else if(_sinModel.WindowType == "Lanczos")
@@ -89,6 +92,7 @@ namespace ebsis_3.Repositories
                 {
                     _sinModel.xCoordWidmo.Add(scale[i]);
                     _sinModel.yCoordWidmo.Add(Complex.Abs(window[i].Magnitude));
+                    _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
                 }
             }
             else if(_sinModel.WindowType == "Hamming")
@@ -105,6 +109,7 @@ namespace ebsis_3.Repositories
                 {
                     _sinModel.xCoordWidmo.Add(scale[i]);
                     _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                    _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
                 }
             }
             else if(_sinModel.WindowType == "Hamming Periodic")
@@ -121,6 +126,7 @@ namespace ebsis_3.Repositories
                 {
                     _sinModel.xCoordWidmo.Add(scale[i]);
                     _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                    _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
                 }
             }
             else
@@ -136,6 +142,7 @@ namespace ebsis_3.Repositories
                 {
                     _sinModel.xCoordWidmo.Add(scale[i]);
                     _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                    _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
                 }
             }
 

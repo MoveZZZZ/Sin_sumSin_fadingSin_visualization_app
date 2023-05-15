@@ -14,16 +14,15 @@ namespace ebsis_3.Repositories
     {
         public void CreateSinusoidSeries(CustomSignalModel _customSignal)
         {
-            double K = 10.0;
             _customSignal.ErrorMSG = "";
             _customSignal.xCoord = new List<double>();
             _customSignal.yCoord = new List<double>();
 
             List<double> points = new List<double>();
 
-            for (double i = 0, t = 0; i < _customSignal.SampleRate * _customSignal.TimeEnd; i++, t += 1 / _customSignal.SampleRate)
+            for (double i = 0, t = 0; i < _customSignal.SampleRate * _customSignal.Time; i++, t += 1 / _customSignal.SampleRate)
             {
-                double tempPoints = _customSignal.Amplitude * K * (Math.Pow((t/_customSignal.TimeFirst),_customSignal.Nvalue)/(1+Math.Pow((t / _customSignal.TimeFirst), _customSignal.Nvalue)))
+                double tempPoints = _customSignal.Amplitude * _customSignal.Kvalue * (Math.Pow((t/_customSignal.TimeFirst),_customSignal.Nvalue)/(1+Math.Pow((t / _customSignal.TimeFirst), _customSignal.Nvalue)))
                     * Math.Exp(-(t/_customSignal.TimeSecond)) * Math.Cos(2*Math.PI*_customSignal.Frequency*t+_customSignal.Phasse);
 
                 points.Add(tempPoints);
@@ -41,11 +40,12 @@ namespace ebsis_3.Repositories
         {
             _customSignal.xCoordSpectrum = new List<double>();
             _customSignal.yCoordSpectrum = new List<double>();
+            _customSignal.yCoordSpectrumPhase = new List<double>();
             int WindowWidth = (int)Math.Round((1 / _customSignal.Frequency) / (1 / _customSignal.SampleRate)*5 + 0.5f);
             if (WindowWidth > points.Length)
             {
                 WindowWidth = points.Length;
-                _customSignal.ErrorMSG = "*too much window width, bad spectrum, change frequency or time range!";
+                _customSignal.ErrorMSG = "*too much window width, bad spectrum, change frequency or time!";
             }
             if (_customSignal.WindowType == "Hann Periodic")
             {
@@ -61,6 +61,7 @@ namespace ebsis_3.Repositories
                 {
                     _customSignal.xCoordSpectrum.Add(scale[i]);
                     _customSignal.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
+                    _customSignal.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
                 }
             }
             else if (_customSignal.WindowType == "Hann")
@@ -77,6 +78,7 @@ namespace ebsis_3.Repositories
                 {
                     _customSignal.xCoordSpectrum.Add(scale[i]);
                     _customSignal.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
+                    _customSignal.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
                 }
             }
             else if (_customSignal.WindowType == "Lanczos")
@@ -93,6 +95,7 @@ namespace ebsis_3.Repositories
                 {
                     _customSignal.xCoordSpectrum.Add(scale[i]);
                     _customSignal.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
+                    _customSignal.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
                 }
             }
             else if (_customSignal.WindowType == "Hamming")
@@ -109,6 +112,7 @@ namespace ebsis_3.Repositories
                 {
                     _customSignal.xCoordSpectrum.Add(scale[i]);
                     _customSignal.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
+                    _customSignal.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
                 }
             }
             else if (_customSignal.WindowType == "Hamming Periodic")
@@ -125,6 +129,7 @@ namespace ebsis_3.Repositories
                 {
                     _customSignal.xCoordSpectrum.Add(scale[i]);
                     _customSignal.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
+                    _customSignal.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
                 }
             }
             else
@@ -140,6 +145,7 @@ namespace ebsis_3.Repositories
                 {
                     _customSignal.xCoordSpectrum.Add(scale[i]);
                     _customSignal.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
+                    _customSignal.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
                 }
             }
         }

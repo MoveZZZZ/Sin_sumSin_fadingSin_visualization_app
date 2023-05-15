@@ -20,18 +20,40 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1150"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
-            <TextBlock
+        <Border BorderBrush="Black"
+                BorderThickness="0.5"
+                CornerRadius="10"
+                Margin="10,5,10,5"
+                Grid.Row="0" Grid.RowSpan="3" Grid.Column="1">
+            <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                         Margin="5">
+                <TextBlock
+                        Text="Data"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="35"
+                    Foreground="Red"
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                        />
+                <TextBlock
                         Text="Frequency [Hz]"
                         TextWrapping="Wrap"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Margin="0,60,0,0"
+                        Margin="0,10,0,0"
                         FontFamily="Montserrat"
                         FontSize="15"
                         />
@@ -73,6 +95,17 @@
                         FontSize="15"
                          Text="{Binding SelectedItemSampleFreq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock
+                        Text="Signal time [s]"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+            <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                         Text="{Binding SelectedItemSignalTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock
                         Text="Time Parameters"
                         TextWrapping="Wrap"
                         HorizontalAlignment="Center"
@@ -92,7 +125,7 @@
                      Text="t1:"
                         TextWrapping="Wrap"
                     HorizontalAlignment="Right"   
-                    Margin="67,0,15,0"
+                    Margin="57,0,15,0"
                     VerticalAlignment="Center"
 
                         FontFamily="Montserrat"
@@ -127,6 +160,61 @@
                                  Margin="0,0,0,0"
                          Text="{Binding SelectedItemTSecond, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
+            <TextBlock
+                        Text="Other parameters"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                        />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Column="1"
+                     Text="K :"
+                        TextWrapping="Wrap"
+                    HorizontalAlignment="Right"   
+                    Margin="57,0,15,0"
+                    VerticalAlignment="Center"
+
+                        FontFamily="Montserrat"
+                        FontSize="15"/>
+                <TextBox FontFamily="Montserrat"
+                                 Grid.Column="1"
+                                 TextAlignment="Center"
+                        FontSize="15"
+                          Width="30"
+                                 Height="20"
+                         Margin="0,0,-17,0"
+                                 HorizontalAlignment="Right"
+                         VerticalAlignment="Center"
+                         Text="{Binding SelectedItemParametrK, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Column="2"
+                                   Text=" N:"
+                                   TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="20,1,2.5,-1"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                                   />
+                <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                                   Grid.Column="3"
+                                 TextAlignment="Center"
+                                 HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                          Width="30"
+                                 Height="20"
+                                 Margin="0,0,0,0"
+                         Text="{Binding SelectedItemParametrN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
 
 
             <TextBlock
@@ -149,7 +237,7 @@
                         FontSize="15"
                           Width="30"
                                  Height="20"
-                         Margin="85,0,0,0"
+                         Margin="75,0,0,0"
                                  HorizontalAlignment="Right"
                          VerticalAlignment="Center"
                          Text="{Binding SelectedItemTimeStart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -236,16 +324,38 @@
                         FontFamily="Montserrat"
                         FontSize="15"/>
         </StackPanel>
-        <StackPanel Grid.Row="0">
+        </Border>
+        <Border BorderBrush="Black"
+                BorderThickness="0.5"
+                CornerRadius="10"
+                Grid.Row="0"
+                Margin="5">
+            <StackPanel>
 
-            <oxy:PlotView Model="{Binding PlotModelCustomSignal}" Background="Transparent" Width="1100" Height="340" Margin="25"/>
+                <oxy:PlotView Model="{Binding PlotModelCustomSignal}" Background="Transparent" Width="1100" Height="225" Margin="25"/>
 
-        </StackPanel>
-        <StackPanel Grid.Row="1">
+            </StackPanel>
+        </Border>
+        <Border BorderBrush="Black"
+                BorderThickness="0.5"
+                CornerRadius="10"
+                Grid.Row="1"
+                Margin="5">
+            <StackPanel>
 
-            <oxy:PlotView Model="{Binding PlotModelSpectrum}" Background="Transparent" Width="1100" Height="340" Margin="25"/>
+                <oxy:PlotView Model="{Binding PlotModelSpectrum}" Background="Transparent" Width="1100" Height="225" Margin="25"/>
 
-        </StackPanel>
+            </StackPanel>
+        </Border>
+        <Border BorderBrush="Black"
+                BorderThickness="0.5"
+                CornerRadius="10"
+                Grid.Row="2"
+                Margin="5">
+            <StackPanel Grid.Row="2">
+                <oxy:PlotView Model="{Binding PlotModelSpectrumPhase}" Background="Transparent" Width="1100" Height="225" Margin="25"/>
+            </StackPanel>
+        </Border>
     </Grid>
 
 </UserControl>

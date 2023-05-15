@@ -28,6 +28,12 @@ namespace ebsis_3.ViewModel
         private const string _basicTimeStart = "0";
         private const string _basicTimeEnd = "1";
 
+        private const string _basicSignalTime = "1";
+
+        private System.Windows.Visibility _isVisibleCustomPhaseTimeItem = System.Windows.Visibility.Collapsed;
+        private System.Windows.Visibility _isVisibleCustomPhaseTimeFrequencyItem = System.Windows.Visibility.Collapsed;
+        private System.Windows.Visibility _isVisiblityCustomPhaseText = System.Windows.Visibility.Collapsed;
+
 
         private string _selectedItemFreqencyFirstSin = _basicFreqSin1;
         private string _selectedItemAmplitudeFirstSin = _basicAmplitudeSin1;
@@ -41,17 +47,25 @@ namespace ebsis_3.ViewModel
 
         private string _selectedItemTimeStart = _basicTimeStart;
         private string _selectedItemTimeEnd = _basicTimeEnd;
+        private string _selectedItemSignalTime = _basicSignalTime;
         private string _errMsg = "";
 
         private bool _checkBoxBasicChecked=true;
         private bool _checkBoxTimeChecked;
         private bool _checkBoxTimeFreqChecked;
 
+        private string _customPhaseText = "";
+
         private string _selectedItemWindowTypeString = "None";
         private ComboBoxItem _selectedItemWindowType;
 
         private PlotModel _plotModelDualSin;
         private PlotModel _plotModelSpectrum;
+        private PlotModel _plotModelSpectrumPhase;
+
+        private int _selectedFormulaCustomPhaseTimeComboBoxIndex = 0;
+        private int _selectedFormulaCustomPhaseTimeFreqComboBoxIndex = 0;
+
 
 
         public PlotModel PlotModelDualSin
@@ -77,6 +91,19 @@ namespace ebsis_3.ViewModel
             {
                 _plotModelSpectrum = value;
                 OnPropertyChanged(nameof(PlotModelSpectrum));
+
+            }
+        }
+        public PlotModel PlotModelSpectrumPhase
+        {
+            get
+            {
+                return _plotModelSpectrumPhase;
+            }
+            set
+            {
+                _plotModelSpectrumPhase = value;
+                OnPropertyChanged(nameof(PlotModelSpectrumPhase));
 
             }
         }
@@ -230,6 +257,21 @@ namespace ebsis_3.ViewModel
                 }
             }
         }
+        public string SelectedItemSignalTime
+        {
+            get
+            {
+                return _selectedItemSignalTime;
+            }
+            set
+            {
+                if(_selectedItemSignalTime!=value)
+                {
+                    _selectedItemSignalTime = value;
+                    OnPropertyChanged(nameof(SelectedItemSignalTime));
+                }
+            }
+        }
         public string ErrorMessage
         {
             get
@@ -255,6 +297,10 @@ namespace ebsis_3.ViewModel
                 {
                     CheckBoxTimeChecked = false;
                     CheckBoxTimeFreqChecked = false;
+                    IsVisiblityCustomPhaseText = System.Windows.Visibility.Collapsed;
+                    IsVisibleCustomPhaseTimeItem = System.Windows.Visibility.Collapsed;
+                    IsVisibleCustomPhaseTimeFrequencyItem = System.Windows.Visibility.Collapsed;
+
 
                 }
                 OnPropertyChanged(nameof(CheckBoxBasicChecked));
@@ -270,6 +316,10 @@ namespace ebsis_3.ViewModel
                 {
                     CheckBoxBasicChecked = false;
                     CheckBoxTimeFreqChecked = false;
+                    IsVisiblityCustomPhaseText = System.Windows.Visibility.Hidden;
+                    IsVisibleCustomPhaseTimeItem = System.Windows.Visibility.Visible;
+                    IsVisibleCustomPhaseTimeFrequencyItem = System.Windows.Visibility.Collapsed;
+                    SelectedFormulaCustomPhaseTimeComboBoxIndex = 0;
                 }
                 OnPropertyChanged(nameof(CheckBoxTimeChecked));
             }
@@ -284,8 +334,97 @@ namespace ebsis_3.ViewModel
                 {
                     CheckBoxBasicChecked = false;
                     CheckBoxTimeChecked = false;
+                    IsVisiblityCustomPhaseText = System.Windows.Visibility.Hidden;
+                    IsVisibleCustomPhaseTimeFrequencyItem = System.Windows.Visibility.Visible;
+                    IsVisibleCustomPhaseTimeItem = System.Windows.Visibility.Collapsed;
+                    SelectedFormulaCustomPhaseTimeFreqComboBoxIndex = 0;
+
                 }
                 OnPropertyChanged(nameof(CheckBoxTimeFreqChecked));
+            }
+        }
+        public string CustomPhaseText
+        {
+            get { return _customPhaseText; }
+            set
+            {
+                if(_customPhaseText != value)
+                {
+                    _customPhaseText = value;
+                    OnPropertyChanged(nameof(CustomPhaseText));
+                }
+            }
+        }
+        public System.Windows.Visibility IsVisibleCustomPhaseTimeItem
+        {
+            get { return _isVisibleCustomPhaseTimeItem; }
+            set
+            {
+                if(_isVisibleCustomPhaseTimeItem != value)
+                {
+                    _isVisibleCustomPhaseTimeItem = value;
+                    OnPropertyChanged(nameof(IsVisibleCustomPhaseTimeItem));
+                }
+            }
+        }
+        public System.Windows.Visibility IsVisiblityCustomPhaseText
+        {
+            get
+            {
+                return _isVisiblityCustomPhaseText;
+            }
+            set
+            {
+                if (_isVisiblityCustomPhaseText != value)
+                {
+                    _isVisiblityCustomPhaseText = value;
+                    OnPropertyChanged(nameof(IsVisiblityCustomPhaseText));
+                }
+            }
+        }
+        public System.Windows.Visibility IsVisibleCustomPhaseTimeFrequencyItem
+        {
+            get
+            {
+                return _isVisibleCustomPhaseTimeFrequencyItem;
+            }
+            set
+            {
+                if(_isVisibleCustomPhaseTimeFrequencyItem!=value)
+                {
+                    _isVisibleCustomPhaseTimeFrequencyItem = value;
+                    OnPropertyChanged(nameof(IsVisibleCustomPhaseTimeFrequencyItem));
+                }
+            }
+        }
+        public int SelectedFormulaCustomPhaseTimeComboBoxIndex
+        {
+            get
+            {
+                return _selectedFormulaCustomPhaseTimeComboBoxIndex;
+            }
+            set
+            {
+                if(_selectedFormulaCustomPhaseTimeComboBoxIndex!=value)
+                {
+                    _selectedFormulaCustomPhaseTimeComboBoxIndex = value;
+                    OnPropertyChanged(nameof(SelectedFormulaCustomPhaseTimeComboBoxIndex));
+                }
+            }
+        }
+        public int SelectedFormulaCustomPhaseTimeFreqComboBoxIndex
+        {
+            get
+            {
+                return _selectedFormulaCustomPhaseTimeFreqComboBoxIndex;
+            }
+            set
+            {
+                if(_selectedFormulaCustomPhaseTimeFreqComboBoxIndex!=value)
+                {
+                    _selectedFormulaCustomPhaseTimeFreqComboBoxIndex = value;
+                    OnPropertyChanged(nameof(SelectedFormulaCustomPhaseTimeFreqComboBoxIndex));
+                }
             }
         }
 
@@ -306,7 +445,7 @@ namespace ebsis_3.ViewModel
 
         private bool CanExecuteChangeCommand(object obj)
         {
-            return validateNull();
+            return validateNull() && validateOption();
         }
 
         private void ExecuteChangeCommand(object obj)
@@ -315,21 +454,38 @@ namespace ebsis_3.ViewModel
         }
         private void calculateSinusoidParameters()
         {
+            CustomPhaseText = "None";
             PlotModelDualSin = new PlotModel();
             PlotModelSpectrum = new PlotModel();
+            PlotModelSpectrumPhase = new PlotModel();
 
             validateData();
             updateValue();
 
             setParDualSinusoid();
             setParSpectrum();
-            if(_checkBoxBasicChecked)
+            setParSpectrumPhase();
+            if (_checkBoxBasicChecked)
                 DualSinusRepository.CreateSinusoidSeries(_DualSinusoidModedl);
+
+            else if (_checkBoxTimeChecked)
+            {
+                DualSinusRepository.CalculateCustomPhaseOffsetTime(_DualSinusoidModedl, SelectedFormulaCustomPhaseTimeComboBoxIndex);
+                DualSinusRepository.CreateSinusoidSeriesOffsetTime(_DualSinusoidModedl);
+                CustomPhaseText = "Phase second sinusoid : " + _DualSinusoidModedl.PhasseCustom.ToString();
+                IsVisiblityCustomPhaseText = System.Windows.Visibility.Visible;
+            }
+            else if(_checkBoxTimeFreqChecked)
+            {
+                DualSinusRepository.CalculateCustomPhaseOffsetTimeAndFrequency(_DualSinusoidModedl, SelectedFormulaCustomPhaseTimeFreqComboBoxIndex);
+                DualSinusRepository.CreateSinusoidSeriesOffsetTimeAndFrequency(_DualSinusoidModedl);
+                CustomPhaseText = "Phase second sinusoid : " + _DualSinusoidModedl.PhasseCustom.ToString();
+                IsVisiblityCustomPhaseText = System.Windows.Visibility.Visible;
+            }
             ErrorMessage = _DualSinusoidModedl.ErrorMSG;
             addSeriesDualSin();
             addSeriesSpectrum();
-
-
+            addSeriesSpectrumPhase();
         }
         private void validateData()
         {
@@ -343,16 +499,19 @@ namespace ebsis_3.ViewModel
             SelectedItemTimeEnd = SelectedItemTimeEnd.Replace(".", ",");
             SelectedItemAmplitudeFirstSinusoid = SelectedItemAmplitudeFirstSinusoid.Replace(".", ",");
             SelectedItemAmplitudeSecondSinusoid = SelectedItemAmplitudeSecondSinusoid.Replace(".", ",");
+            SelectedItemPhaseFirstSinusoid = SelectedItemPhaseFirstSinusoid.Replace(".", ",");
+            SelectedItemPhaseSecondSinusoid = SelectedItemPhaseSecondSinusoid.Replace(".", ",");
+            SelectedItemSignalTime= SelectedItemSignalTime.Replace(".", ",");
             foreach (char c in SelectedItemFreqencyFirstSinusoid)
             {
-                if (!char.IsDigit(c) && c != '.' && c != ',')
+                if (!char.IsDigit(c))
                 {
                     SelectedItemFreqencyFirstSinusoid = _basicFreqSin1;
                 }
             }
             foreach (char c in SelectedItemFreqencySecondSinusoid)
             {
-                if (!char.IsDigit(c) && c != '.' && c != ',')
+                if (!char.IsDigit(c))
                 {
                     SelectedItemFreqencySecondSinusoid = _basicFreqSin2;
                 }
@@ -406,6 +565,13 @@ namespace ebsis_3.ViewModel
                     SelectedItemTimeEnd = _basicTimeEnd;
                 }
             }
+            foreach (char c in SelectedItemSignalTime)
+            {
+                if (!char.IsDigit(c) && c != '.' && c != ',')
+                {
+                    SelectedItemSignalTime= _basicSignalTime;
+                }
+            }
         }
         private void validateTimeValue()
         {
@@ -415,14 +581,19 @@ namespace ebsis_3.ViewModel
                 SelectedItemTimeEnd = SelectedItemTimeStart;
                 SelectedItemTimeStart = t;
             }
+
+            if (Convert.ToDouble(_selectedItemTimeEnd) > Convert.ToDouble(_selectedItemSignalTime))
+            {
+                SelectedItemSignalTime = SelectedItemTimeEnd;
+            }
         }
         private void validateSampleFreq()
         {
             System.Console.WriteLine(Math.Max(Convert.ToDouble(_selectedItemFreqencyFirstSin), Convert.ToDouble(_selectedItemFreqencySecondSin)));
-            if ((Convert.ToDouble(_selectedItemSampleFreq)* Convert.ToDouble(_selectedItemTimeEnd)) / 2 
+            if ((Convert.ToDouble(_selectedItemSampleFreq)* Convert.ToDouble(_selectedItemSignalTime)) / 2 
                 < Math.Max(Convert.ToDouble(_selectedItemFreqencyFirstSin), Convert.ToDouble(_selectedItemFreqencySecondSin)))
             {
-                double freqNew = (Math.Max(Convert.ToDouble(_selectedItemFreqencyFirstSin), Convert.ToDouble(_selectedItemFreqencySecondSin)) * 2)/Convert.ToDouble(_selectedItemTimeEnd);
+                double freqNew = (Math.Max(Convert.ToDouble(_selectedItemFreqencyFirstSin), Convert.ToDouble(_selectedItemFreqencySecondSin)) * 2)/Convert.ToDouble(_selectedItemSignalTime);
                 SelectedItemSampleFreq = Convert.ToString(freqNew);
             }
         }
@@ -435,6 +606,7 @@ namespace ebsis_3.ViewModel
             _DualSinusoidModedl.SampleRate = Convert.ToDouble(_selectedItemSampleFreq);
             _DualSinusoidModedl.PhasseFirstSin = Convert.ToDouble(_selectedItemPhaseFirstSin);
             _DualSinusoidModedl.PhasseSecondSin = Convert.ToDouble(_selectedItemPhaseSecondSin);
+            _DualSinusoidModedl.Time = Convert.ToDouble(_selectedItemSignalTime);
             _DualSinusoidModedl.TimeStart = Convert.ToDouble(_selectedItemTimeStart);
             _DualSinusoidModedl.TimeEnd = Convert.ToDouble(_selectedItemTimeEnd);
             _DualSinusoidModedl.WindowType = _selectedItemWindowTypeString;
@@ -443,13 +615,19 @@ namespace ebsis_3.ViewModel
         {
             PlotModelDualSin.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = "Time [s]" });
             PlotModelDualSin.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Title = "Amplitude [m]" });
-            PlotModelDualSin.Title = "Wykres sumy sinusoid w dziedzinie czasu";
+            PlotModelDualSin.Title = "Graph of the sine wave in the time domain";
         }
         private void setParSpectrum()
         {
             PlotModelSpectrum.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = "Frequency [Hz]" });
             PlotModelSpectrum.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Title = "Magnitude" });
-            PlotModelSpectrum.Title = "Wykres sumy sinusoid w dziedzinie częstotliwości";
+            PlotModelSpectrum.Title = "Graph of the sine wave in the frequency domain [Magnitude]";
+        }
+        private void setParSpectrumPhase()
+        {
+            PlotModelSpectrumPhase.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = "Frequency [Hz]" });
+            PlotModelSpectrumPhase.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Title = "Phase" });
+            PlotModelSpectrumPhase.Title = "Graph of the sine wave in the frequency domain [Phase]";
         }
         private void addSeriesDualSin()
         {
@@ -472,9 +650,8 @@ namespace ebsis_3.ViewModel
         }
         private void addSeriesSpectrum()
         {
-            var seriesSpectrum = new LineSeries()
+            var seriesSpectrum = new StemSeries()
             {
-                LineStyle = LineStyle.Automatic,
                 MarkerType = MarkerType.Circle,
                 MarkerStroke = OxyColor.FromRgb(0, 0, 0),
                 Color = OxyColor.FromRgb(66, 0, 117)
@@ -490,6 +667,25 @@ namespace ebsis_3.ViewModel
             PlotModelSpectrum.Series.Add(seriesSpectrum);
             PlotModelSpectrum.InvalidatePlot(true);
         }
+        private void addSeriesSpectrumPhase()
+        {
+            var seriesSpectrumPhase = new StemSeries()
+            {
+                MarkerType = MarkerType.Circle,
+                MarkerStroke = OxyColor.FromRgb(0, 0, 0),
+                Color = OxyColor.FromRgb(66, 0, 117)
+            };
+            for (int i = 0; i < _DualSinusoidModedl.xCoordSpectrum.Count; i++)
+            {
+                seriesSpectrumPhase.Points.Add(new DataPoint(_DualSinusoidModedl.xCoordSpectrum[i], _DualSinusoidModedl.yCoordSpectrumPhase[i]));
+            }
+            if (PlotModelSpectrumPhase.Series.Count != 0)
+            {
+                PlotModelSpectrumPhase.Series.Clear();
+            }
+            PlotModelSpectrumPhase.Series.Add(seriesSpectrumPhase);
+            PlotModelSpectrumPhase.InvalidatePlot(true);
+        }
         private bool validateNull()
         {
             if (SelectedItemAmplitudeFirstSinusoid == "" || SelectedItemAmplitudeSecondSinusoid == "" || SelectedItemFreqencyFirstSinusoid == ""
@@ -498,6 +694,12 @@ namespace ebsis_3.ViewModel
                 return false;
             return true;
 
+        }
+        private bool validateOption()
+        {
+            if (_checkBoxBasicChecked || _checkBoxTimeChecked || _checkBoxTimeFreqChecked)
+                return true;
+            return false;
         }
     }
 }

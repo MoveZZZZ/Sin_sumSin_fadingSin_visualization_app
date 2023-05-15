@@ -12,6 +12,7 @@ namespace ebsis_3.Models
         public double Amplitude { get; set; }
         public double Frequency { get; set; }
         public double Phasse { get; set; }
+        public double Time { get; set; }
         public double TimeStart { get; set; }
         public double TimeEnd { get; set; }
         public double SampleRate { get; set; }
@@ -20,6 +21,7 @@ namespace ebsis_3.Models
         public List<double> yCoord{ get; set; }
         public List<double> xCoordWidmo { get; set; }
         public List<double> yCoordWidmo { get; set; }
+        public List<double> yCoordWidmoPhase { get; set; }
         public string ErrorMSG { get; set; }
     }
 }
