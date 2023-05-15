@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ebsis_3
+namespace ebsis_3.View
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для BasicSinusoidView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class BasicSinusoidView : UserControl
     {
-        public MainWindow()
+        public BasicSinusoidView()
         {
             InitializeComponent();
         }
