@@ -20,6 +20,7 @@ namespace ebsis_3.Models
         public double Kvalue { get; set; }
         public double SampleRate { get; set; }
         public string WindowType { get; set; }
+        public int WindowWidthModel { get; set; }
         public List<double> xCoord { get; set; }
         public List<double> yCoord { get; set; }
         public List<double> xCoordSpectrum { get; set; }

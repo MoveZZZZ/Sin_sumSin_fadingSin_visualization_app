@@ -38,116 +38,149 @@ namespace ebsis_3.Repositories
             _sinModel.xCoordWidmo = new List<double>();
             _sinModel.yCoordWidmo = new List<double>();
             _sinModel.yCoordWidmoPhase = new List<double>();
-            int WindowWidth = (int)Math.Round((1 / _sinModel.Frequency) / (1 / _sinModel.SampleRate) * 5 + 0.5f);
+            int WindowWidth = createWindowWidtch(_sinModel);
             if (WindowWidth > points.Length)
             {
                 WindowWidth = points.Length;
-                _sinModel.ErrorMSG = "*too much window width, bad spectrum, change frequency or time range!";
+                _sinModel.ErrorMSG = "*too much window width, change sample freq., window width=max";
+                _sinModel.WindowWidthModel = WindowWidth;
             }
-            if (_sinModel.WindowType== "Hann Periodic")
+            if (_sinModel.WindowType == "Hann Periodic")
             {
-                var HannWindowPer = Window.HannPeriodic(WindowWidth);
-                var window = new Complex[WindowWidth];
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    window[i] = new Complex(points[i] * HannWindowPer[i], 0.0);
-                }
-                Fourier.Forward(window);
-                var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    _sinModel.xCoordWidmo.Add(scale[i]);
-                    _sinModel.yCoordWidmo.Add(window[i].Magnitude);
-                    _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
-                }
+                HannPeriodicWindowParameters(_sinModel, points, WindowWidth);
             }
-            else if(_sinModel.WindowType=="Hann")
+            else if (_sinModel.WindowType == "Hann")
             {
-                var HannWindow = Window.Hann(WindowWidth);
-                var window = new Complex[WindowWidth];
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    window[i] = new Complex(points[i] * HannWindow[i], 0.0);
-                }
-                Fourier.Forward(window);
-                var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    _sinModel.xCoordWidmo.Add(scale[i]);
-                    _sinModel.yCoordWidmo.Add(window[i].Magnitude);
-                    _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
-                }
+                HannWindowParameters(_sinModel, points, WindowWidth);
             }
-            else if(_sinModel.WindowType == "Lanczos")
+            else if (_sinModel.WindowType == "Lanczos")
             {
-                var LanczosWindow = Window.Lanczos(WindowWidth);
-                var window = new Complex[WindowWidth];
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    window[i] = new Complex(points[i] * LanczosWindow[i], 0.0);
-                }
-                Fourier.Forward(window);
-                var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    _sinModel.xCoordWidmo.Add(scale[i]);
-                    _sinModel.yCoordWidmo.Add(Complex.Abs(window[i].Magnitude));
-                    _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
-                }
+                LanczosWindowParameters(_sinModel, points, WindowWidth);
             }
-            else if(_sinModel.WindowType == "Hamming")
+            else if (_sinModel.WindowType == "Hamming")
             {
-                var HammingWindow = Window.Hamming(WindowWidth);
-                var window = new Complex[WindowWidth];
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    window[i] = new Complex(points[i] * HammingWindow[i], 0.0);
-                }
-                Fourier.Forward(window);
-                var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    _sinModel.xCoordWidmo.Add(scale[i]);
-                    _sinModel.yCoordWidmo.Add(window[i].Magnitude);
-                    _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
-                }
+                HammingWindowParameters(_sinModel, points, WindowWidth);
             }
-            else if(_sinModel.WindowType == "Hamming Periodic")
+            else if (_sinModel.WindowType == "Hamming Periodic")
             {
-                var HammingPerWindow = Window.HammingPeriodic(WindowWidth);
-                var window = new Complex[WindowWidth];
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    window[i] = new Complex(points[i] * HammingPerWindow[i], 0.0);
-                }
-                Fourier.Forward(window);
-                var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    _sinModel.xCoordWidmo.Add(scale[i]);
-                    _sinModel.yCoordWidmo.Add(window[i].Magnitude);
-                    _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
-                }
+                HammingPeriodicWindowParameters(_sinModel, points, WindowWidth);
             }
             else
             {
-                var window = new Complex[WindowWidth];
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    window[i] = new Complex(points[i], 0.0);
-                }
-                Fourier.Forward(window);
-                var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    _sinModel.xCoordWidmo.Add(scale[i]);
-                    _sinModel.yCoordWidmo.Add(window[i].Magnitude);
-                    _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
-                }
+                NoneWindowParameters(_sinModel, points, WindowWidth);
             }
-
-           
-            
+        }
+        private int createWindowWidtch(SinusoidModel _sinModel)
+        {
+            if (_sinModel.WindowWidthModel == 0)
+            {
+                return (int)Math.Round((1 / _sinModel.Frequency) / (1 / _sinModel.SampleRate) * 5 + 0.5f);
+            }
+            else
+            {
+                return _sinModel.WindowWidthModel;
+            }
+        }
+        private void HannPeriodicWindowParameters(SinusoidModel _sinModel, double[] points, int WindowWidth)
+        {
+            var HannWindowPer = Window.HannPeriodic(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * HannWindowPer[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModel.xCoordWidmo.Add(scale[i]);
+                _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
+            }
+        }
+        private void HannWindowParameters(SinusoidModel _sinModel, double[] points, int WindowWidth)
+        {
+            var HannWindow = Window.Hann(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * HannWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModel.xCoordWidmo.Add(scale[i]);
+                _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
+            }
+        }
+        private void LanczosWindowParameters(SinusoidModel _sinModel, double[] points, int WindowWidth)
+        {
+            var LanczosWindow = Window.Lanczos(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * LanczosWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModel.xCoordWidmo.Add(scale[i]);
+                _sinModel.yCoordWidmo.Add(Complex.Abs(window[i].Magnitude));
+                _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
+            }
+        }
+        private void HammingWindowParameters(SinusoidModel _sinModel, double[] points, int WindowWidth)
+        {
+            var HammingWindow = Window.Hamming(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * HammingWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModel.xCoordWidmo.Add(scale[i]);
+                _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
+            }
+        }
+        private void HammingPeriodicWindowParameters(SinusoidModel _sinModel, double[] points, int WindowWidth)
+        {
+            var HammingPerWindow = Window.HammingPeriodic(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * HammingPerWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModel.xCoordWidmo.Add(scale[i]);
+                _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
+            }
+        }
+        private void NoneWindowParameters(SinusoidModel _sinModel, double[] points, int WindowWidth)
+        {
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModel.xCoordWidmo.Add(scale[i]);
+                _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
+            }
         }
     }
 }

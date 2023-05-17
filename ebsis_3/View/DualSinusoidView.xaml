@@ -127,7 +127,7 @@
                 </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,5,0">
                 <TextBlock
-                        Text="Sample Frequency"
+                        Text="Sample Frequency per 1 second"
                         TextWrapping="Wrap"
                         HorizontalAlignment="Center"
                         Margin="0,10,0,0"
@@ -218,7 +218,21 @@
                     <ComboBoxItem>Hamming</ComboBoxItem>
                     <ComboBoxItem>Hamming Periodic</ComboBoxItem>
                 </ComboBox>
-                <Grid>
+                    <TextBlock
+                        Text="Window Width (0-Auto)"
+                        TextWrapping="Wrap"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0"
+                        FontFamily="Montserrat"
+                        FontSize="15"
+                    Visibility="{Binding IsVisibleWindowWidth, UpdateSourceTrigger=PropertyChanged}"
+                        />
+                    <TextBox FontFamily="Montserrat"
+                        FontSize="15"
+                             Width="180"
+                          Visibility="{Binding IsVisibleWindowWidth, UpdateSourceTrigger=PropertyChanged}"
+                         Text="{Binding SelectedItemWindowWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>

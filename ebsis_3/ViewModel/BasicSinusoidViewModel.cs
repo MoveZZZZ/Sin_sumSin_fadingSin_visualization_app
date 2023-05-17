@@ -24,9 +24,9 @@ namespace ebsis_3.ViewModel
         private const string _basicTimeStart = "0";
         private const string _basicTimeEnd = "1";
 
+        private const string _basicWidnowWidth = "0";
 
 
-        private string _freqData = "Hz";
 
         private string _selectedItemFreqency = _basicFreq;
         private string _selectedIteAmplitude = _basicAmplitude;
@@ -37,9 +37,13 @@ namespace ebsis_3.ViewModel
         private string _selectedItemTimeStart = _basicTimeStart;
         private string _selectedItemTimeEnd = _basicTimeEnd;
 
+        private string _selectedItemWindowWidth = _basicWidnowWidth;
+
         private string _selectedItemWindowTypeString = "None";
         private ComboBoxItem _selectedItemWindowType;
         private string _errMsg = "";
+
+        private System.Windows.Visibility _isVisibleWindowWidth = System.Windows.Visibility.Collapsed;
 
         private PlotModel _plotModelBase;
         private PlotModel _plotModelSpectrum;
@@ -96,22 +100,15 @@ namespace ebsis_3.ViewModel
                     OnPropertyChanged(nameof(SelectedItemWindowType));
                     _selectedItemWindowTypeString = Convert.ToString(_selectedItemWindowType.Content);
                 }
-            }
-        }
-        public string FreqLabel
-        {
-            get
-            {
-                return "Frequency" + " [" + _freqData + "]";
-            }
-            set
-            {
-                if (_freqData != value)
+                if(String.Equals(_selectedItemWindowTypeString,"None")==true)
                 {
-                    _freqData = value;
-                    OnPropertyChanged(nameof(FreqLabel));
+                    IsVisibleWindowWidth = System.Windows.Visibility.Collapsed;
+                    SelectedItemWindowWidth = "0";
                 }
-
+                else
+                {
+                    IsVisibleWindowWidth = System.Windows.Visibility.Visible;
+                }
             }
         }
         public string SelectedItemFreqency
@@ -220,6 +217,36 @@ namespace ebsis_3.ViewModel
                 }
             }
         }
+        public string SelectedItemWindowWidth
+        {
+            get
+            {
+                return _selectedItemWindowWidth;
+            }
+            set
+            {
+                if(_selectedItemWindowWidth!=value)
+                {
+                    _selectedItemWindowWidth = value;
+                    OnPropertyChanged(nameof(SelectedItemWindowWidth));
+                }
+            }
+        }
+        public System.Windows.Visibility IsVisibleWindowWidth
+        {
+            get
+            {
+                return _isVisibleWindowWidth;
+            }
+            set
+            {
+                if(_isVisibleWindowWidth!=value)
+                {
+                    _isVisibleWindowWidth = value;
+                    OnPropertyChanged(nameof(IsVisibleWindowWidth));
+                }
+            }
+        }
         public string ErrorMessage
         {
             get
@@ -264,20 +291,25 @@ namespace ebsis_3.ViewModel
             PlotModelBase = new PlotModel();
             PlotModelSpectrum = new PlotModel();
             PlotModelSpectrumPhase = new PlotModel();
+            try
+            {
+                validateData();
+                updateValue();
+                setParSinusoid();
+                setParSinusoidSpectrum();
+                setParSinusoidSpectrumPhase();
 
-            validateData();
-            updateValue();
-
-            setParSinusoid();
-            setParSinusoidSpectrum();
-            setParSinusoidSpectrumPhase();
-
-            SinusRepository.CreateSinusoidSeries(_SinusoidModel);
-            ErrorMessage = _SinusoidModel.ErrorMSG;
-            addSeries();
-            addSeriesSpectrum();
-            addSeriesSpectrumPhase();
-
+                SinusRepository.CreateSinusoidSeries(_SinusoidModel);
+                ErrorMessage = _SinusoidModel.ErrorMSG;
+                SelectedItemWindowWidth = _SinusoidModel.WindowWidthModel.ToString();
+                addSeries();
+                addSeriesSpectrum();
+                addSeriesSpectrumPhase();
+            }
+            catch
+            {
+                ErrorMessage = "Bad value!";
+            }
         }
         private void updateValue()
         {
@@ -289,6 +321,7 @@ namespace ebsis_3.ViewModel
             _SinusoidModel.TimeStart = Convert.ToDouble(_selectedItemTimeStart);
             _SinusoidModel.TimeEnd = Convert.ToDouble(_selectedItemTimeEnd);
             _SinusoidModel.WindowType = _selectedItemWindowTypeString;
+            _SinusoidModel.WindowWidthModel = Convert.ToInt32(_selectedItemWindowWidth);
         }
         private void setParSinusoid()
         {
@@ -336,6 +369,7 @@ namespace ebsis_3.ViewModel
             SelectedItemAmplitude = SelectedItemAmplitude.Replace(".", ",");
             SelectedItemPhase = SelectedItemPhase.Replace(".", ",");
             SelectedItemSignalTime = SelectedItemSignalTime.Replace(".", ",");
+            SelectedItemWindowWidth = SelectedItemWindowWidth.Replace(".", ",");
             foreach (char c in SelectedItemFreqency)
             {
                 if (!char.IsDigit(c))
@@ -345,14 +379,14 @@ namespace ebsis_3.ViewModel
             }
             foreach (char c in SelectedItemAmplitude)
             {
-                if (!char.IsDigit(c) && c != '.' && c != ',')
+                if (!char.IsDigit(c) && c != ',')
                 {
                     SelectedItemAmplitude = _basicAmplitude;
                 }
             }
             foreach (char c in SelectedItemPhase)
             {
-                if (!char.IsDigit(c) && c != '.' && c != ',')
+                if (!char.IsDigit(c) && c != ',')
                 {
                     SelectedItemPhase = _basicPhase;
                 }
@@ -366,24 +400,35 @@ namespace ebsis_3.ViewModel
             }
             foreach (char c in SelectedItemTimeStart)
             {
-                if (!char.IsDigit(c) && c != '.' && c != ',')
+                if (!char.IsDigit(c) && c != ',')
                 {
                     SelectedItemTimeStart = _basicTimeStart;
                 }
             }
             foreach (char c in SelectedItemTimeEnd)
             {
-                if (!char.IsDigit(c) && c != '.' && c != ',')
+                if (!char.IsDigit(c) && c != ',')
                 {
                     SelectedItemTimeEnd = _basicTimeEnd;
                 }
             }
             foreach (char c in SelectedItemSignalTime)
             {
-                if (!char.IsDigit(c) && c != '.' && c != ',')
+                if (!char.IsDigit(c)  && c != ',')
                 {
                     SelectedItemTimeEnd = _basicSignalTime;
                 }
+            }
+            foreach (char c in SelectedItemWindowWidth)
+            {
+                if (!char.IsDigit(c) && c != ',')
+                {
+                    SelectedItemWindowWidth = _basicWidnowWidth;
+                }
+            }
+            if(SelectedItemWindowWidth.IndexOf(",")>-1)
+            {
+                SelectedItemWindowWidth = Math.Ceiling(Convert.ToDouble(SelectedItemWindowWidth)).ToString();
             }
         }
         private void validateSampleFreq()

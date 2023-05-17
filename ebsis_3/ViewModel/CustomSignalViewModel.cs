@@ -29,7 +29,7 @@ namespace ebsis_3.ViewModel
         private const string _kPar="10";
 
 
-
+        private const string _basicWidnowWidth = "0";
 
         private string _selectedItemFreqency = _basicFreq;
         private string _selectedIteAmplitude = _basicAmplitude;
@@ -45,6 +45,8 @@ namespace ebsis_3.ViewModel
         private string _selectedItemParametrK = _kPar;
         private string _selectedItemParametrN = _nPar;
 
+        private string _selectedItemWindowWidth = _basicWidnowWidth;
+
         private string _selectedItemWindowTypeString = "None";
         private ComboBoxItem _selectedItemWindowType;
         private string _errMsg = "";
@@ -52,6 +54,9 @@ namespace ebsis_3.ViewModel
         private PlotModel _plotModelCustomSignal;
         private PlotModel _plotModelSpectrum;
         private PlotModel _plotModelSpectrumPhase;
+
+        private System.Windows.Visibility _isVisibleWindowWidth = System.Windows.Visibility.Collapsed;
+
         public PlotModel PlotModelCustomSignal
         {
             get
@@ -101,6 +106,15 @@ namespace ebsis_3.ViewModel
                     _selectedItemWindowType = value;
                     OnPropertyChanged(nameof(SelectedItemWindowType));
                     _selectedItemWindowTypeString = Convert.ToString(_selectedItemWindowType.Content);
+                }
+                if (String.Equals(_selectedItemWindowTypeString, "None") == true)
+                {
+                    IsVisibleWindowWidth = System.Windows.Visibility.Collapsed;
+                    SelectedItemWindowWidth = "0";
+                }
+                else
+                {
+                    IsVisibleWindowWidth = System.Windows.Visibility.Visible;
                 }
             }
         }
@@ -270,6 +284,36 @@ namespace ebsis_3.ViewModel
                 }
             }
         }
+        public string SelectedItemWindowWidth
+        {
+            get
+            {
+                return _selectedItemWindowWidth;
+            }
+            set
+            {
+                if (_selectedItemWindowWidth != value)
+                {
+                    _selectedItemWindowWidth = value;
+                    OnPropertyChanged(nameof(SelectedItemWindowWidth));
+                }
+            }
+        }
+        public System.Windows.Visibility IsVisibleWindowWidth
+        {
+            get
+            {
+                return _isVisibleWindowWidth;
+            }
+            set
+            {
+                if (_isVisibleWindowWidth != value)
+                {
+                    _isVisibleWindowWidth = value;
+                    OnPropertyChanged(nameof(IsVisibleWindowWidth));
+                }
+            }
+        }
         public string ErrorMessage
         {
             get
@@ -314,43 +358,47 @@ namespace ebsis_3.ViewModel
             PlotModelCustomSignal = new PlotModel();
             PlotModelSpectrum = new PlotModel();
             PlotModelSpectrumPhase = new PlotModel();
+            try
+            {
+                validateData();
+                updateValue();
 
-            validateData();
-            updateValue();
+                setParSinusoid();
+                setParSinusoidSpectrum();
+                setParSinusoidSpectrumPhase();
 
-            setParSinusoid();
-            setParSinusoidSpectrum();
-            setParSinusoidSpectrumPhase();
 
-            
-            CustomRepository.CreateSinusoidSeries(_CustomModel);
-            ErrorMessage = _CustomModel.ErrorMSG;
-            addSeriesCustomSignal();
-            addSeriesSpectrum();
-            addSeriesSpectrumPhase();
+                CustomRepository.CreateSinusoidSeries(_CustomModel);
+                ErrorMessage = _CustomModel.ErrorMSG;
+                addSeriesCustomSignal();
+                addSeriesSpectrum();
+                addSeriesSpectrumPhase();
+
+            }
+            catch
+            {
+                ErrorMessage = "Bad value!";
+            }
+
 
         }
         private void updateValue()
         {
-            try
-            {
-                _CustomModel.Amplitude = Convert.ToDouble(_selectedIteAmplitude);
-                _CustomModel.Frequency = Convert.ToDouble(_selectedItemFreqency);
-                _CustomModel.SampleRate = Convert.ToDouble(_selectedItemSampleFreq);
-                _CustomModel.Phasse = Convert.ToDouble(_selectedItemPhase);
-                _CustomModel.Time = Convert.ToDouble(_selectedItemSignalTime);
-                _CustomModel.Nvalue = Convert.ToDouble(_selectedItemParametrN);
-                _CustomModel.Kvalue = Convert.ToDouble(_selectedItemParametrK);
-                _CustomModel.TimeStart = Convert.ToDouble(_selectedItemTimeStart);
-                _CustomModel.TimeEnd = Convert.ToDouble(_selectedItemTimeEnd);
-                _CustomModel.TimeFirst = Convert.ToDouble(_selectedItemTFirst);
-                _CustomModel.TimeSecond = Convert.ToDouble(_selectedItemTSecond);
-                _CustomModel.WindowType = _selectedItemWindowTypeString;
-            }
-            catch
-            {
-                return;
-            };
+
+            _CustomModel.Amplitude = Convert.ToDouble(_selectedIteAmplitude);
+            _CustomModel.Frequency = Convert.ToDouble(_selectedItemFreqency);
+            _CustomModel.SampleRate = Convert.ToDouble(_selectedItemSampleFreq);
+            _CustomModel.Phasse = Convert.ToDouble(_selectedItemPhase);
+            _CustomModel.Time = Convert.ToDouble(_selectedItemSignalTime);
+            _CustomModel.Nvalue = Convert.ToDouble(_selectedItemParametrN);
+            _CustomModel.Kvalue = Convert.ToDouble(_selectedItemParametrK);
+            _CustomModel.TimeStart = Convert.ToDouble(_selectedItemTimeStart);
+            _CustomModel.TimeEnd = Convert.ToDouble(_selectedItemTimeEnd);
+            _CustomModel.TimeFirst = Convert.ToDouble(_selectedItemTFirst);
+            _CustomModel.TimeSecond = Convert.ToDouble(_selectedItemTSecond);
+            _CustomModel.WindowType = _selectedItemWindowTypeString;
+            _CustomModel.WindowWidthModel = Convert.ToInt32(_selectedItemWindowWidth);
+
 
         }
         private void setParSinusoid()
@@ -402,6 +450,7 @@ namespace ebsis_3.ViewModel
             SelectedItemParametrN = SelectedItemParametrN.Replace(".", ",");
             SelectedItemPhase = SelectedItemPhase.Replace(".", ",");
             SelectedItemSignalTime = SelectedItemSignalTime.Replace(".", ",");
+            SelectedItemWindowWidth = SelectedItemWindowWidth.Replace(".", ",");
 
 
             foreach (char c in SelectedItemFreqency)
@@ -480,6 +529,17 @@ namespace ebsis_3.ViewModel
                 {
                     SelectedItemParametrK = _kPar;
                 }
+            }
+            foreach (char c in SelectedItemWindowWidth)
+            {
+                if (!char.IsDigit(c) && c != ',')
+                {
+                    SelectedItemWindowWidth = _basicWidnowWidth;
+                }
+            }
+            if (SelectedItemWindowWidth.IndexOf(",") > -1)
+            {
+                SelectedItemWindowWidth = Math.Ceiling(Convert.ToDouble(SelectedItemWindowWidth)).ToString();
             }
         }
         private void validateSampleFreq()

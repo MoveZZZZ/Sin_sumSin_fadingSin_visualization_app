@@ -236,7 +236,7 @@
                         </Button>
                         <Button
                         BorderThickness="0"
-                            Content="Custom Signal"
+                            Content="Fading siusoid"
                             Foreground="White"
                             FontSize="12"
                             FontFamily="Montsterrat"

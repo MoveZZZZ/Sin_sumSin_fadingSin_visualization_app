@@ -74,14 +74,13 @@ namespace ebsis_3.Repositories
         }
         public void CalculateCustomPhaseOffsetTimeAndFrequency(DualSinusoidModel _sinModeelDual, int option)
         {
-
             double observationTime = _sinModeelDual.TimeEnd - _sinModeelDual.TimeStart;
             double periodBasicSinus = Convert.ToDouble(LCM(1, 1)) / Convert.ToDouble(GCF(Convert.ToInt32(_sinModeelDual.FrequencyFirstSin), Convert.ToInt32(_sinModeelDual.FrequencySecondSin)));
             double customPhase = 0;
             if (option == 0)
                 customPhase = periodBasicSinus/100 * _sinModeelDual.FrequencySecondSin* _sinModeelDual.Time / observationTime + _sinModeelDual.PhasseSecondSin;
             else
-                customPhase = periodBasicSinus / 100 * _sinModeelDual.FrequencySecondSin/(2*option) * _sinModeelDual.Time / observationTime *(20*option) + _sinModeelDual.PhasseSecondSin;
+                customPhase = periodBasicSinus / 100 * _sinModeelDual.FrequencySecondSin/(2*option) * (_sinModeelDual.Time / observationTime) *(20*option+10) + _sinModeelDual.PhasseSecondSin;
 
             _sinModeelDual.PhasseCustom = customPhase;
         }
@@ -112,112 +111,36 @@ namespace ebsis_3.Repositories
             _sinModelDual.xCoordSpectrum= new List<double>();
             _sinModelDual.yCoordSpectrum = new List<double>();
             _sinModelDual.yCoordSpectrumPhase = new List<double>();
-            int WindowWidth = (int)Math.Round((1 / Math.Max(_sinModelDual.FrequencyFirstSin, _sinModelDual.FrequencySecondSin)) / (1 / _sinModelDual.SampleRate) * 5 + 0.5f);
+            int WindowWidth = createWindowWidtch(_sinModelDual);
             if(WindowWidth>points.Length)
             {
                 WindowWidth = points.Length;
-                _sinModelDual.ErrorMSG= "*too much window width, bad spectrum, change frequency or time!";
+                _sinModelDual.ErrorMSG= "*too much window width, change sample freq., window width=max";
+                _sinModelDual.WindowWidthModel = WindowWidth;
             }
             if (_sinModelDual.WindowType == "Hann Periodic")
             {
-                var HannWindowPer = Window.HannPeriodic(WindowWidth);
-                var window = new Complex[WindowWidth];
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    window[i] = new Complex(points[i] * HannWindowPer[i], 0.0);
-                }
-                Fourier.Forward(window);
-                var scale = Fourier.FrequencyScale(WindowWidth, _sinModelDual.SampleRate);
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    _sinModelDual.xCoordSpectrum.Add(scale[i]);
-                    _sinModelDual.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
-                    _sinModelDual.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
-                }
+                HannPeriodicWindowParameters(_sinModelDual, points, WindowWidth); ;
             }
             else if (_sinModelDual.WindowType == "Hann")
             {
-                var HannWindow = Window.Hann(WindowWidth);
-                var window = new Complex[WindowWidth];
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    window[i] = new Complex(points[i] * HannWindow[i], 0.0);
-                }
-                Fourier.Forward(window);
-                var scale = Fourier.FrequencyScale(WindowWidth, _sinModelDual.SampleRate);
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    _sinModelDual.xCoordSpectrum.Add(scale[i]);
-                    _sinModelDual.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
-                    _sinModelDual.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
-                }
+                HannWindowParameters(_sinModelDual, points, WindowWidth); 
             }
             else if (_sinModelDual.WindowType == "Lanczos")
             {
-                var LanczosWindow = Window.Lanczos(WindowWidth);
-                var window = new Complex[WindowWidth];
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    window[i] = new Complex(points[i] * LanczosWindow[i], 0.0);
-                }
-                Fourier.Forward(window);
-                var scale = Fourier.FrequencyScale(WindowWidth, _sinModelDual.SampleRate);
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    _sinModelDual.xCoordSpectrum.Add(scale[i]);
-                    _sinModelDual.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
-                    _sinModelDual.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
-                }
+                LanczosWindowParameters(_sinModelDual, points, WindowWidth);
             }
             else if (_sinModelDual.WindowType == "Hamming")
             {
-                var HammingWindow = Window.Hamming(WindowWidth);
-                var window = new Complex[WindowWidth];
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    window[i] = new Complex(points[i] * HammingWindow[i], 0.0);
-                }
-                Fourier.Forward(window);
-                var scale = Fourier.FrequencyScale(WindowWidth, _sinModelDual.SampleRate);
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    _sinModelDual.xCoordSpectrum.Add(scale[i]);
-                    _sinModelDual.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
-                    _sinModelDual.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
-                }
+                HammingWindowParameters(_sinModelDual, points, WindowWidth);
             }
             else if (_sinModelDual.WindowType == "Hamming Periodic")
             {
-                var HammingPerWindow = Window.HammingPeriodic(WindowWidth);
-                var window = new Complex[WindowWidth];
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    window[i] = new Complex(points[i] * HammingPerWindow[i], 0.0);
-                }
-                Fourier.Forward(window);
-                var scale = Fourier.FrequencyScale(WindowWidth, _sinModelDual.SampleRate);
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    _sinModelDual.xCoordSpectrum.Add(scale[i]);
-                    _sinModelDual.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
-                    _sinModelDual.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
-                }
+                HammingPeriodicWindowParameters(_sinModelDual, points, WindowWidth);
             }
             else
             {
-                var window = new Complex[WindowWidth];
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    window[i] = new Complex(points[i], 0.0);
-                }
-                Fourier.Forward(window);
-                var scale = Fourier.FrequencyScale(WindowWidth, _sinModelDual.SampleRate);
-                for (int i = 0; i < WindowWidth; i++)
-                {
-                    _sinModelDual.xCoordSpectrum.Add(scale[i]);
-                    _sinModelDual.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
-                    _sinModelDual.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
-                }
+                NoneWindowParameters(_sinModelDual, points, WindowWidth);
             }
         }
         private static int GCF (int a, int b)
@@ -233,6 +156,120 @@ namespace ebsis_3.Repositories
         private static int LCM (int a, int b)
         {
             return (a / GCF(a, b)) * b;
+        }
+
+
+        private int createWindowWidtch(DualSinusoidModel _sinModelDual)
+        {
+            if (_sinModelDual.WindowWidthModel == 0)
+            {
+                return (int)Math.Round((1 / Math.Max(_sinModelDual.FrequencyFirstSin, _sinModelDual.FrequencySecondSin)) / (1 / _sinModelDual.SampleRate) * 5 + 0.5f);
+            }
+            else
+            {
+                return _sinModelDual.WindowWidthModel;
+            }
+        }
+        private void HannPeriodicWindowParameters(DualSinusoidModel _sinModelDual, double[] points, int WindowWidth)
+        {
+            var HannWindowPer = Window.HannPeriodic(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * HannWindowPer[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModelDual.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModelDual.xCoordSpectrum.Add(scale[i]);
+                _sinModelDual.yCoordSpectrum.Add(window[i].Magnitude);
+                _sinModelDual.yCoordSpectrumPhase.Add(window[i].Phase);
+            }
+        }
+        private void HannWindowParameters(DualSinusoidModel _sinModelDual, double[] points, int WindowWidth)
+        {
+            var HannWindow = Window.Hann(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * HannWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModelDual.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModelDual.xCoordSpectrum.Add(scale[i]);
+                _sinModelDual.yCoordSpectrum.Add(window[i].Magnitude);
+                _sinModelDual.yCoordSpectrumPhase.Add(window[i].Phase);
+            }
+        }
+        private void LanczosWindowParameters(DualSinusoidModel _sinModelDual, double[] points, int WindowWidth)
+        {
+            var LanczosWindow = Window.Lanczos(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * LanczosWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModelDual.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModelDual.xCoordSpectrum.Add(scale[i]);
+                _sinModelDual.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
+                _sinModelDual.yCoordSpectrumPhase.Add(window[i].Phase);
+            }
+        }
+        private void HammingWindowParameters(DualSinusoidModel _sinModelDual, double[] points, int WindowWidth)
+        {
+            var HammingWindow = Window.Hamming(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * HammingWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModelDual.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModelDual.xCoordSpectrum.Add(scale[i]);
+                _sinModelDual.yCoordSpectrum.Add(window[i].Magnitude);
+                _sinModelDual.yCoordSpectrumPhase.Add(window[i].Phase);
+            }
+        }
+        private void HammingPeriodicWindowParameters(DualSinusoidModel _sinModelDual, double[] points, int WindowWidth)
+        {
+            var HammingPerWindow = Window.HammingPeriodic(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * HammingPerWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModelDual.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModelDual.xCoordSpectrum.Add(scale[i]);
+                _sinModelDual.yCoordSpectrum.Add(window[i].Magnitude);
+                _sinModelDual.yCoordSpectrumPhase.Add(window[i].Phase);
+            }
+        }
+        private void NoneWindowParameters(DualSinusoidModel _sinModelDual, double[] points, int WindowWidth)
+        {
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModelDual.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModelDual.xCoordSpectrum.Add(scale[i]);
+                _sinModelDual.yCoordSpectrum.Add(window[i].Magnitude);
+                _sinModelDual.yCoordSpectrumPhase.Add(window[i].Phase);
+            }
         }
 
 

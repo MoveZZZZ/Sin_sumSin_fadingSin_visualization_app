@@ -61,7 +61,7 @@ namespace ebsis_3.ViewModel
         private void ExecuteShowCustomSignalCommand(object obj)
         {
             CurrentChildView = new CustomSignalViewModel();
-            LabelMainWindow = "Custom Signal";
+            LabelMainWindow = "Fading Sinusoid";
         }
 
         private void ExecuteShowDualSinusoidCommand(object obj)
