@@ -19,8 +19,8 @@ namespace ebsis_3.Repositories
             _sinModedl.xCoord = new List<double>();
             _sinModedl.yCoord = new List<double>();
 
-            var points = Generate.Sinusoidal(Convert.ToInt32(_sinModedl.Time*_sinModedl.SampleRate), _sinModedl.SampleRate, _sinModedl.Frequency, _sinModedl.Amplitude, 0, _sinModedl.Phasse);
-            
+            var points = Generate.Sinusoidal(Convert.ToInt32(_sinModedl.Time * _sinModedl.SampleRate), _sinModedl.SampleRate, _sinModedl.Frequency, _sinModedl.Amplitude, 0, _sinModedl.Phasse);
+
             for (int i = 0; i < points.Length; i++)
             {
                 double x = 1 / _sinModedl.SampleRate * i;
@@ -64,6 +64,26 @@ namespace ebsis_3.Repositories
             else if (_sinModel.WindowType == "Hamming Periodic")
             {
                 HammingPeriodicWindowParameters(_sinModel, points, WindowWidth);
+            }
+            else if(_sinModel.WindowType== "Barlett")
+            {
+                BarlettWindowParameters(_sinModel, points, WindowWidth);
+            }
+            else if (_sinModel.WindowType == "Barlett Hann")
+            {
+                BarlettHannWindowParameters(_sinModel, points, WindowWidth);
+            }
+            else if (_sinModel.WindowType == "Blackman")
+            {
+                BlackmanWindowParameters(_sinModel, points, WindowWidth);
+            }
+            else if (_sinModel.WindowType == "Dirchlet")
+            {
+                DirchletWindowParameters(_sinModel, points, WindowWidth);
+            }
+            else if (_sinModel.WindowType == "Nutall")
+            {
+                NutallWindowParameters(_sinModel, points, WindowWidth);
             }
             else
             {
@@ -182,5 +202,96 @@ namespace ebsis_3.Repositories
                 _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
             }
         }
+        private void BarlettWindowParameters (SinusoidModel _sinModel, double[] points, int WindowWidth)
+        {
+            var BarlettWindow = Window.Bartlett(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * BarlettWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModel.xCoordWidmo.Add(scale[i]);
+                _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
+            }
+        }
+        private void BarlettHannWindowParameters(SinusoidModel _sinModel, double[] points, int WindowWidth)
+        {
+            var BarlettHannWindow = Window.BartlettHann(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * BarlettHannWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModel.xCoordWidmo.Add(scale[i]);
+                _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
+            }
+        }
+        private void BlackmanWindowParameters(SinusoidModel _sinModel, double[] points, int WindowWidth)
+        {
+            var BlackmanWindow = Window.Blackman(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * BlackmanWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModel.xCoordWidmo.Add(scale[i]);
+                _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
+            }
+        }
+        private void DirchletWindowParameters(SinusoidModel _sinModel, double[] points, int WindowWidth)
+        {
+            var DirchletWindow = Window.Dirichlet(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * DirchletWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModel.xCoordWidmo.Add(scale[i]);
+                _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
+            }
+        }
+        private void NutallWindowParameters(SinusoidModel _sinModel, double[] points, int WindowWidth)
+        {
+            var NutallWindow = Window.Nuttall(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * NutallWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _sinModel.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _sinModel.xCoordWidmo.Add(scale[i]);
+                _sinModel.yCoordWidmo.Add(window[i].Magnitude);
+                _sinModel.yCoordWidmoPhase.Add(window[i].Phase);
+            }
+        }
+
+
+
+
+
+
     }
 }

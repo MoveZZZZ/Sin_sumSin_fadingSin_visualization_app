@@ -163,6 +163,11 @@
                 <ComboBoxItem>Lanczos</ComboBoxItem>
                 <ComboBoxItem>Hamming</ComboBoxItem>
                 <ComboBoxItem>Hamming Periodic</ComboBoxItem>
+                    <ComboBoxItem>Barlett</ComboBoxItem>
+                    <ComboBoxItem>Barlett Hann</ComboBoxItem>
+                    <ComboBoxItem>Blackman</ComboBoxItem>
+                    <ComboBoxItem>Dirchlet</ComboBoxItem>
+                    <ComboBoxItem>Nutall</ComboBoxItem>
             </ComboBox>
                 <TextBlock
                         Text="Window Width (0-Auto)"

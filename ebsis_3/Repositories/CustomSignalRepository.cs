@@ -63,11 +63,31 @@ namespace ebsis_3.Repositories
             }
             else if (_customSignal.WindowType == "Hamming")
             {
-               HammingPeriodicWindowParameters(_customSignal, points, WindowWidth); 
+               HammingWindowParameters(_customSignal, points, WindowWidth); 
             }
             else if (_customSignal.WindowType == "Hamming Periodic")
             {
                HammingPeriodicWindowParameters(_customSignal, points, WindowWidth);
+            }
+            else if (_customSignal.WindowType == "Barlett")
+            {
+                BarlettWindowParameters(_customSignal, points, WindowWidth);
+            }
+            else if (_customSignal.WindowType == "Barlett Hann")
+            {
+                BarlettHannWindowParameters(_customSignal, points, WindowWidth);
+            }
+            else if (_customSignal.WindowType == "Blackman")
+            {
+                BlackmanWindowParameters(_customSignal, points, WindowWidth);
+            }
+            else if (_customSignal.WindowType == "Dirchlet")
+            {
+                DirchletWindowParameters(_customSignal, points, WindowWidth);
+            }
+            else if (_customSignal.WindowType == "Nutall")
+            {
+                NutallWindowParameters(_customSignal, points, WindowWidth);
             }
             else
             {
@@ -176,6 +196,91 @@ namespace ebsis_3.Repositories
             for (int i = 0; i < WindowWidth; i++)
             {
                 window[i] = new Complex(points[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _customSignal.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _customSignal.xCoordSpectrum.Add(scale[i]);
+                _customSignal.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
+                _customSignal.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
+            }
+        }
+        private void BarlettWindowParameters(CustomSignalModel _customSignal, double[] points, int WindowWidth)
+        {
+            var BarlettWindow = Window.Bartlett(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * BarlettWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _customSignal.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _customSignal.xCoordSpectrum.Add(scale[i]);
+                _customSignal.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
+                _customSignal.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
+            }
+        }
+        private void BarlettHannWindowParameters(CustomSignalModel _customSignal, double[] points, int WindowWidth)
+        {
+            var BarlettHannWindow = Window.BartlettHann(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * BarlettHannWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _customSignal.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _customSignal.xCoordSpectrum.Add(scale[i]);
+                _customSignal.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
+                _customSignal.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
+            }
+        }
+        private void BlackmanWindowParameters(CustomSignalModel _customSignal, double[] points, int WindowWidth)
+        {
+            var BlackmanWindow = Window.Blackman(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * BlackmanWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _customSignal.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _customSignal.xCoordSpectrum.Add(scale[i]);
+                _customSignal.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
+                _customSignal.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
+            }
+        }
+        private void DirchletWindowParameters(CustomSignalModel _customSignal, double[] points, int WindowWidth)
+        {
+            var DirchletWindow = Window.Dirichlet(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * DirchletWindow[i], 0.0);
+            }
+            Fourier.Forward(window);
+            var scale = Fourier.FrequencyScale(WindowWidth, _customSignal.SampleRate);
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                _customSignal.xCoordSpectrum.Add(scale[i]);
+                _customSignal.yCoordSpectrum.Add(Complex.Abs(window[i].Magnitude));
+                _customSignal.yCoordSpectrumPhase.Add(Complex.Abs(window[i].Phase));
+            }
+        }
+        private void NutallWindowParameters(CustomSignalModel _customSignal, double[] points, int WindowWidth)
+        {
+            var NutallWindow = Window.Nuttall(WindowWidth);
+            var window = new Complex[WindowWidth];
+            for (int i = 0; i < WindowWidth; i++)
+            {
+                window[i] = new Complex(points[i] * NutallWindow[i], 0.0);
             }
             Fourier.Forward(window);
             var scale = Fourier.FrequencyScale(WindowWidth, _customSignal.SampleRate);
