@@ -18,7 +18,7 @@ namespace ebsis_3.Repositories
             _sinModedl.ErrorMSG = "";
             _sinModedl.xCoord = new List<double>();
             _sinModedl.yCoord = new List<double>();
-
+            
             var points = Generate.Sinusoidal(Convert.ToInt32(_sinModedl.Time * _sinModedl.SampleRate), _sinModedl.SampleRate, _sinModedl.Frequency, _sinModedl.Amplitude, 0, _sinModedl.Phasse);
 
             for (int i = 0; i < points.Length; i++)

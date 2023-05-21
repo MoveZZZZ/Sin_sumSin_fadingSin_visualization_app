@@ -22,7 +22,8 @@ namespace ebsis_3.Repositories
 
             for (double i = 0, t = 0; i < _customSignal.SampleRate * _customSignal.Time; i++, t += 1 / _customSignal.SampleRate)
             {
-                double tempPoints = _customSignal.Amplitude * _customSignal.Kvalue * (Math.Pow((t/_customSignal.TimeFirst),_customSignal.Nvalue)/(1+Math.Pow((t / _customSignal.TimeFirst), _customSignal.Nvalue)))
+                double tempPoints = _customSignal.Amplitude * _customSignal.Kvalue * 
+                    (Math.Pow((t/_customSignal.TimeFirst),_customSignal.Nvalue)/(1+Math.Pow((t / _customSignal.TimeFirst), _customSignal.Nvalue)))
                     * Math.Exp(-(t/_customSignal.TimeSecond)) * Math.Cos(2*Math.PI*_customSignal.Frequency*t+_customSignal.Phasse);
 
                 points.Add(tempPoints);
