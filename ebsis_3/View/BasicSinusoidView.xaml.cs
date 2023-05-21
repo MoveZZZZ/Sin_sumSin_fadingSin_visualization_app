@@ -24,5 +24,6 @@ namespace ebsis_3.View
         {
             InitializeComponent();
         }
+
     }
 }

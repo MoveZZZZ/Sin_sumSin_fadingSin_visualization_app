@@ -29,10 +29,15 @@ namespace ebsis_3.ViewModel
         private const string _basicTimeEnd = "1";
 
         private const string _basicSignalTime = "1";
+        private const string _basicWidnowWidth = "0";
+
+        private string _selectedItemWindowWidth = _basicWidnowWidth;
 
         private System.Windows.Visibility _isVisibleCustomPhaseTimeItem = System.Windows.Visibility.Collapsed;
         private System.Windows.Visibility _isVisibleCustomPhaseTimeFrequencyItem = System.Windows.Visibility.Collapsed;
         private System.Windows.Visibility _isVisiblityCustomPhaseText = System.Windows.Visibility.Collapsed;
+
+        private System.Windows.Visibility _isVisibleWindowWidth = System.Windows.Visibility.Collapsed;
 
 
         private string _selectedItemFreqencyFirstSin = _basicFreqSin1;
@@ -117,6 +122,15 @@ namespace ebsis_3.ViewModel
                     _selectedItemWindowType = value;
                     OnPropertyChanged(nameof(SelectedItemWindowType));
                     _selectedItemWindowTypeString = Convert.ToString(_selectedItemWindowType.Content);
+                }
+                if (String.Equals(_selectedItemWindowTypeString, "None") == true)
+                {
+                    IsVisibleWindowWidth = System.Windows.Visibility.Collapsed;
+                    SelectedItemWindowWidth = "0";
+                }
+                else
+                {
+                    IsVisibleWindowWidth = System.Windows.Visibility.Visible;
                 }
             }
         }
@@ -272,6 +286,21 @@ namespace ebsis_3.ViewModel
                 }
             }
         }
+        public string SelectedItemWindowWidth
+        {
+            get
+            {
+                return _selectedItemWindowWidth;
+            }
+            set
+            {
+                if (_selectedItemWindowWidth != value)
+                {
+                    _selectedItemWindowWidth = value;
+                    OnPropertyChanged(nameof(SelectedItemWindowWidth));
+                }
+            }
+        }
         public string ErrorMessage
         {
             get
@@ -397,6 +426,21 @@ namespace ebsis_3.ViewModel
                 }
             }
         }
+        public System.Windows.Visibility IsVisibleWindowWidth
+        {
+            get
+            {
+                return _isVisibleWindowWidth;
+            }
+            set
+            {
+                if (_isVisibleWindowWidth != value)
+                {
+                    _isVisibleWindowWidth = value;
+                    OnPropertyChanged(nameof(IsVisibleWindowWidth));
+                }
+            }
+        }
         public int SelectedFormulaCustomPhaseTimeComboBoxIndex
         {
             get
@@ -458,34 +502,41 @@ namespace ebsis_3.ViewModel
             PlotModelDualSin = new PlotModel();
             PlotModelSpectrum = new PlotModel();
             PlotModelSpectrumPhase = new PlotModel();
-
-            validateData();
-            updateValue();
-
-            setParDualSinusoid();
-            setParSpectrum();
-            setParSpectrumPhase();
-            if (_checkBoxBasicChecked)
-                DualSinusRepository.CreateSinusoidSeries(_DualSinusoidModedl);
-
-            else if (_checkBoxTimeChecked)
+            try
             {
-                DualSinusRepository.CalculateCustomPhaseOffsetTime(_DualSinusoidModedl, SelectedFormulaCustomPhaseTimeComboBoxIndex);
-                DualSinusRepository.CreateSinusoidSeriesOffsetTime(_DualSinusoidModedl);
-                CustomPhaseText = "Phase second sinusoid : " + _DualSinusoidModedl.PhasseCustom.ToString();
-                IsVisiblityCustomPhaseText = System.Windows.Visibility.Visible;
+                validateData();
+                updateValue();
+
+                setParDualSinusoid();
+                setParSpectrum();
+                setParSpectrumPhase();
+                if (_checkBoxBasicChecked)
+                    DualSinusRepository.CreateSinusoidSeries(_DualSinusoidModedl);
+
+                else if (_checkBoxTimeChecked)
+                {
+                    DualSinusRepository.CalculateCustomPhaseOffsetTime(_DualSinusoidModedl, SelectedFormulaCustomPhaseTimeComboBoxIndex);
+                    DualSinusRepository.CreateSinusoidSeriesOffsetTime(_DualSinusoidModedl);
+                    CustomPhaseText = "Phase second sinusoid : " + _DualSinusoidModedl.PhasseCustom.ToString();
+                    IsVisiblityCustomPhaseText = System.Windows.Visibility.Visible;
+                }
+                else if (_checkBoxTimeFreqChecked)
+                {
+                    DualSinusRepository.CalculateCustomPhaseOffsetTimeAndFrequency(_DualSinusoidModedl, SelectedFormulaCustomPhaseTimeFreqComboBoxIndex);
+                    DualSinusRepository.CreateSinusoidSeriesOffsetTimeAndFrequency(_DualSinusoidModedl);
+                    CustomPhaseText = "Phase second sinusoid : " + _DualSinusoidModedl.PhasseCustom.ToString();
+                    IsVisiblityCustomPhaseText = System.Windows.Visibility.Visible;
+                }
+                ErrorMessage = _DualSinusoidModedl.ErrorMSG;
+                addSeriesDualSin();
+                addSeriesSpectrum();
+                addSeriesSpectrumPhase();
             }
-            else if(_checkBoxTimeFreqChecked)
+            catch
             {
-                DualSinusRepository.CalculateCustomPhaseOffsetTimeAndFrequency(_DualSinusoidModedl, SelectedFormulaCustomPhaseTimeFreqComboBoxIndex);
-                DualSinusRepository.CreateSinusoidSeriesOffsetTimeAndFrequency(_DualSinusoidModedl);
-                CustomPhaseText = "Phase second sinusoid : " + _DualSinusoidModedl.PhasseCustom.ToString();
-                IsVisiblityCustomPhaseText = System.Windows.Visibility.Visible;
+                ErrorMessage = "Bad value!";
             }
-            ErrorMessage = _DualSinusoidModedl.ErrorMSG;
-            addSeriesDualSin();
-            addSeriesSpectrum();
-            addSeriesSpectrumPhase();
+
         }
         private void validateData()
         {
@@ -502,6 +553,7 @@ namespace ebsis_3.ViewModel
             SelectedItemPhaseFirstSinusoid = SelectedItemPhaseFirstSinusoid.Replace(".", ",");
             SelectedItemPhaseSecondSinusoid = SelectedItemPhaseSecondSinusoid.Replace(".", ",");
             SelectedItemSignalTime= SelectedItemSignalTime.Replace(".", ",");
+            SelectedItemWindowWidth = SelectedItemWindowWidth.Replace(".", ",");
             foreach (char c in SelectedItemFreqencyFirstSinusoid)
             {
                 if (!char.IsDigit(c))
@@ -572,6 +624,17 @@ namespace ebsis_3.ViewModel
                     SelectedItemSignalTime= _basicSignalTime;
                 }
             }
+            foreach (char c in SelectedItemWindowWidth)
+            {
+                if (!char.IsDigit(c) && c != ',')
+                {
+                    SelectedItemWindowWidth = _basicWidnowWidth;
+                }
+            }
+            if (SelectedItemWindowWidth.IndexOf(",") > -1)
+            {
+                SelectedItemWindowWidth = Math.Ceiling(Convert.ToDouble(SelectedItemWindowWidth)).ToString();
+            }
         }
         private void validateTimeValue()
         {
@@ -610,6 +673,7 @@ namespace ebsis_3.ViewModel
             _DualSinusoidModedl.TimeStart = Convert.ToDouble(_selectedItemTimeStart);
             _DualSinusoidModedl.TimeEnd = Convert.ToDouble(_selectedItemTimeEnd);
             _DualSinusoidModedl.WindowType = _selectedItemWindowTypeString;
+            _DualSinusoidModedl.WindowWidthModel = Convert.ToInt32(_selectedItemWindowWidth);
         }
         private void setParDualSinusoid()
         {
